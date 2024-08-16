@@ -6,6 +6,8 @@ import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
 import { OverworldChess } from "../classes/OverworldChess.js"
 import { createOverworldAnimations } from "../gameFunctions/Animations.js"
+import { OverworldFriend } from "../classes/OverworldFriend.js"
+import { OverworldFoe } from "../classes/OverworldFoe.js"
 
 export class Overworld extends Scene {
   constructor() {
@@ -67,8 +69,9 @@ export class Overworld extends Scene {
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
 
-    this.player = new OverworldChess(this.board, this, 0, 0)
-    this.player2 = new OverworldChess(this.board, this, 0, 0)
+    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1')
+    this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2')
+    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle')
 
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0
@@ -78,6 +81,7 @@ export class Overworld extends Scene {
   update () {
     this.player.setDepth(this.player.y)
     this.player2.setDepth(this.player2.y)
+    this.player3.setDepth(this.player3.y)
     this.test.setDepth(this.test.y)
   }
 }

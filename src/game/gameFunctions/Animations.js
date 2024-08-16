@@ -96,9 +96,27 @@ export const createAnimations = (scene) => {
 
 export const createOverworldAnimations = (scene) => {
   scene.anims.create({
-    key: 'overworldIdle',
+    key: 'overworldIdle1',
     frames: scene.anims.generateFrameNumbers('overworldEntities', {
       frames: [0, 1]
+    }),
+    frameRate: 4,
+    repeat: -1
+  })
+
+  scene.anims.create({
+    key: 'overworldIdle2',
+    frames: scene.anims.generateFrameNumbers('overworldEntities', {
+      frames: [8, 9]
+    }),
+    frameRate: 4,
+    repeat: -1
+  })
+
+  scene.anims.create({
+    key: 'overworldOrcIdle',
+    frames: scene.anims.generateFrameNumbers('overworldEntities', {
+      frames: [60, 61]
     }),
     frameRate: 4,
     repeat: -1

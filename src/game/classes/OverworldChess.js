@@ -3,13 +3,12 @@ import { killChessAt } from '../helpers.js'
 import { MoveableMarker, OverworldActionMarker } from './Markers.js'
 
 export class OverworldChess extends Phaser.GameObjects.Container {
-  constructor(board, scene, x, y, key, health, damage, tileXY) {
+  constructor(board, scene, x, y, animation, tileXY) {
     super(scene, x, y, [])
 
-    this.selector = scene.add.image(0, 0, 'overworldIndicators',  5)
+    this.selector = scene.add.image(0, 0, 'overworldIndicators', 5)
     this.sprite = scene.add.sprite(0, -4, 'overworldEntities', 0)
     this.texture = this.sprite.texture
-    this.attackType = 'Melee'
 
     this.add(this.sprite)
     this.add(this.selector)
@@ -19,10 +18,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
 
     this.scene.topGroup.add(this)
 
-    this.health = health || 100
-    this.damage = damage || 10
-
-    this.sprite.play('overworldIdle')
+    this.sprite.play(animation || 'overworldIdle')
 
     // var textConfig = { fontSize: '20px', color: 'white', fontFamily: 'Arial' }
     // this.text = scene.add.text(0, 0, this.health, textConfig)
@@ -40,14 +36,6 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     this.hasMoved = false
     this.hasActed = false
 
-    this.on(
-      'board.pointerdown',
-      function () {
-        this.select()
-      },
-      this
-    )
-
     // add behaviors
     this.moveTo = scene.rexBoard.add.moveTo(this)
     this.pathFinder = scene.rexBoard.add.pathFinder(this, {
@@ -59,7 +47,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
         preTile = board.tileXYZToChess(preTile.x, preTile.y, 0)
         var curLevel = curTile.getData('level')
         var preLevel = preTile.getData('level')
-        return 1
+        return preLevel >= curLevel ? 1 : 2
       },
       cacheCost: false
     })
@@ -69,30 +57,6 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     // private members
     this._markers = []
     this._actionMarkers = []
-  }
-  showPossibleActions() {
-    this.hidePossibleActions()
-    if (this.hasActed) {
-      return
-    }
-
-    // var tileXYArray = this.rexChess.board.getNeighborTileXY(this.rexChess.tileXYZ, null)
-    var tileXYArray = this.rexChess.board.getNeighborChess(this.rexChess.tileXYZ).forEach((x) => {
-      if (x instanceof OverworldChess) {
-        return
-      }
-      this._actionMarkers.push(
-        new OverworldActionMarker(
-          this,
-          x.rexChess.tileXYZ,
-          this.scene.midGroup,
-          'overworldIndicators',
-          2,
-          1
-        )
-      )
-    })
-    return tileXYArray
   }
 
   hidePossibleActions() {
@@ -184,34 +148,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     return this
   }
 
-  //   takeDamage(damage) {
-  //     this.health = this.health - damage
-  //     this.text.setText(this.health)
-
-  //     if (this.health <= 0) {
-  //       this.killMe()
-  //       return 'die'
-  //     }
-  //   }
-
   killMe() {
     killChessAt(this.rexChess)
-  }
-
-  select() {
-    if (this.hasActed) {
-      return
-    }
-    this.selector.setAlpha(1)
-    EventBus.emit('selectUnit', this)
-    EventBus.emit('clearUI', this)
-    // this.setFillStyle(0x2541b2, 1)
-    if (!this.hasMoved && !this.hasActed) {
-      this.showMoveableArea()
-    }
-    if (!this.hasActed) {
-      this.showPossibleActions()
-    }
-    return this
   }
 }

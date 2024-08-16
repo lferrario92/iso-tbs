@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Tile } from '../classes/Board'
 import { EnemyChess } from '../classes/EnemyChess'
-import { MoveableMarker, ActionMarker } from '../classes/Markers'
+import { MoveableMarker, ActionMarker, OverworldActionMarker } from '../classes/Markers'
 import { SoldierC } from '../classes/Soldier'
 import { OrcEnemy } from '../classes/Enemies'
 
@@ -61,7 +61,7 @@ export const useGameStore = defineStore('game', {
         chess = this.getHelp()
       }
       chess.rexChess.board.getAllChess().forEach((x) => {
-        if (this.isActionMarker(x)) {
+        if (this.isActionMarker(x) || this.isOverworldActionMarker(x)) {
           x.destroy()
         }
       })
@@ -85,6 +85,9 @@ export const useGameStore = defineStore('game', {
     },
     isActionMarker(chess) {
       return !!(chess instanceof ActionMarker)
+    },
+    isOverworldActionMarker(chess) {
+      return !!(chess instanceof OverworldActionMarker)
     },
     isMovableMarker(chess) {
       return !!(chess instanceof MoveableMarker)
