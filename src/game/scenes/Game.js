@@ -61,7 +61,7 @@ export class Game extends Scene {
           cellHeight: 16,
           type: 1
         }),
-        width: 11,
+        width: 10,
         height: 10
       },
       false,

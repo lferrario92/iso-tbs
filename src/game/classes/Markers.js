@@ -3,29 +3,6 @@ import { cameFrom, getUnitAt } from "../helpers"
 import { Game } from "../scenes/Game"
 import { useGameStore } from "../stores/gameStore"
 
-export class MoveableMarker_old extends RexPlugins.Board.Shape {
-  constructor(chess, tileXY) {
-    var board = chess.rexChess.board
-    var scene = board.scene
-    // Shape(board, tileX, tileY, tileZ, fillColor, fillAlpha, addToBoard)
-    super(board, tileXY.x, tileXY.y, -1, 0xff5c8d, 0.5)
-    scene.add.existing(this)
-    this.setScale(0.5)
-    
-    // on pointer down, move to this tile
-    this.on(
-      'board.pointerdown',
-      function () {
-        if (!chess.moveToTile(this)) {
-          return
-        }
-        this.setFillStyle(0xff5c8d, 1)
-      },
-      this
-    )
-  }
-}
-
 export class MoveableMarker extends Phaser.GameObjects.Sprite {
   constructor(chess, tileXY, group, key, frame, scale) {
     var board = chess.rexChess.board
