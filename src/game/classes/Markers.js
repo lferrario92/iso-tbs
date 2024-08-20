@@ -1,7 +1,9 @@
-import { EventBus } from "../EventBus"
-import { cameFrom, getUnitAt } from "../helpers"
-import { Game } from "../scenes/Game"
-import { useGameStore } from "../stores/gameStore"
+import { EventBus } from '../EventBus'
+import { cameFrom, getUnitAt } from '../helpers'
+import { Game } from '../scenes/Game'
+import { useGameStore } from '../stores/gameStore'
+import { OrcEnemy } from './Enemies'
+import { SoldierC } from './Soldier'
 
 export class MoveableMarker extends Phaser.GameObjects.Sprite {
   constructor(chess, tileXY, group, key, frame, scale) {
@@ -94,7 +96,6 @@ export class ActionMarker extends Phaser.GameObjects.Sprite {
   }
 }
 
-
 export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
   constructor(chess, tileXY, group, key, frame, scale) {
     var board = chess.rexChess.board
@@ -126,8 +127,16 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
       function () {
         const store = useGameStore()
 
-        let tile = this.rexChess.board.tileXYZToChess(this.rexChess.tileXYZ.x, this.rexChess.tileXYZ.y, 0)
-        let target = this.rexChess.board.tileXYZToChess(this.rexChess.tileXYZ.x, this.rexChess.tileXYZ.y, 1)
+        let tile = this.rexChess.board.tileXYZToChess(
+          this.rexChess.tileXYZ.x,
+          this.rexChess.tileXYZ.y,
+          0
+        )
+        let target = this.rexChess.board.tileXYZToChess(
+          this.rexChess.tileXYZ.x,
+          this.rexChess.tileXYZ.y,
+          1
+        )
         let invader = store.selectedUnit
 
         const level = this.rexChess.board
@@ -136,7 +145,17 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
 
         let actionData = {
           level,
-          attackingFrom: this.rexChess.board.directionBetween(invader, target)
+          attackingFrom: this.rexChess.board.directionBetween(invader, target),
+          invadingArmy: {
+            units: [SoldierC, SoldierC],
+            modifiers: null,
+            overWorldChess: invader
+          },
+          targetArmy: {
+            units: [OrcEnemy],
+            modifiers: null,
+            overWorldChess: target
+          }
         }
 
         console.log(actionData.attackingFrom)

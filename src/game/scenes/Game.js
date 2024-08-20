@@ -1,26 +1,26 @@
-import { EventBus } from '../EventBus';
-import { Scene } from 'phaser';
+import { EventBus } from '../EventBus'
+import { Scene } from 'phaser'
 import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin.js'
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { QuadGrid } from 'phaser3-rex-plugins/plugins/board-components.js'
 import { Board } from '../classes/Board.js'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
 import { enemyTurnStart } from '../gameFunctions/EnemyTurnStart.js'
-import { playerTurnStart } from '../gameFunctions/PlayerTurnStart';
+import { playerTurnStart } from '../gameFunctions/PlayerTurnStart'
 import { EyeBallEnemy, OrcEnemy } from '../classes/Enemies'
-import { Soldier, SoldierC } from '../classes/Soldier';
-import { useGameStore } from "../stores/gameStore"
-import { useEnemyStore } from '../stores/enemyStore';
+import { Soldier, SoldierC } from '../classes/Soldier'
+import { useGameStore } from '../stores/gameStore'
+import { useEnemyStore } from '../stores/enemyStore'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-import { generateGameUI } from '../gameFunctions/GenerateUI';
-import { createAnimations } from '../gameFunctions/Animations';
-import { getAvailableTile } from '../helpers';
+import { generateGameUI } from '../gameFunctions/GenerateUI'
+import { createAnimations } from '../gameFunctions/Animations'
+import { getAvailableTile } from '../helpers'
 
 export class Game extends Scene {
   constructor() {
     super('Game')
   }
-  
+
   preload() {
     this.load.scenePlugin({
       key: 'rexboardplugin',
@@ -39,7 +39,7 @@ export class Game extends Scene {
       sceneKey: 'rexUI'
     })
   }
-  
+
   create() {
     const store = useGameStore()
     let currentTurn = 0
@@ -131,8 +131,12 @@ export class Game extends Scene {
     // var enemy2 = new OrcEnemy(board, this, 0, 0)
     let { army1, army2 } = []
 
-    army1 = store.warData.invadingArmy.units.map((unit) => new unit(board, this, 0, 0, placingCoords.invading))
-    army2 = store.warData.targetArmy.units.map((unit) => new unit(board, this, 0, 0, placingCoords.target))
+    army1 = store.warData.invadingArmy.units.map(
+      (unit) => new unit(board, this, 0, 0, placingCoords.invading)
+    )
+    army2 = store.warData.targetArmy.units.map(
+      (unit) => new unit(board, this, 0, 0, placingCoords.target)
+    )
 
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
@@ -151,6 +155,14 @@ export class Game extends Scene {
           // enemyStore.enemyTurn([enemy, enemy2].filter((x) => x.active), players)
         } else {
           currentTurn = 0
+
+          console.log(store)
+          // kill overworld unit
+          // clear overworld UI
+
+          store.warData.targetArmy.overWorldChess.destroy()
+          EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
+
           this.scene.switch('Overworld')
           console.log('game stop')
           EventBus.removeListener('endTurn')
@@ -164,29 +176,29 @@ export class Game extends Scene {
 
     EventBus.emit('current-scene-ready', this)
   }
-  
+
   update(time, delta) {
     this.cameraController.update(delta)
-    
+
     var pointer = this.input.activePointer
   }
 
   changeScene() {
     this.scene.start('GameOver')
   }
-  
+
   startCutscene() {
     this.scene.manager.scenes.find((x) => x.sys.config === 'BattleCutscene').restart()
     this.scene.switch('BattleCutscene')
   }
 
-  goFullscreen () {
+  goFullscreen() {
     this.scale.startFullscreen()
 
     this.scale.setGameSize(window.innerWidth, window.innerHeight)
   }
 
-  scaleFullscreen () {
+  scaleFullscreen() {
     this.scale.setGameSize(window.innerWidth, window.innerHeight)
   }
 }

@@ -24,13 +24,15 @@ export const useGameStore = defineStore('game', {
     warData: {
       invadingArmy: {
         units: [SoldierC, SoldierC],
-        modifiers: null
+        modifiers: null,
+        overWorldChess: null
       },
       targetArmy: {
         units: [OrcEnemy],
-        modifiers: null
+        modifiers: null,
+        overWorldChess: null
       }
-    },
+    }
   }),
   actions: {
     selectUnit(unit) {
@@ -66,9 +68,11 @@ export const useGameStore = defineStore('game', {
         }
       })
     },
-    setWarData (data) {
-      this.warData.level = data.level
-      this.warData.attackingFrom = data.attackingFrom
+    setWarData(data) {
+      this.warData = {
+        ...this.warData,
+        ...data
+      }
     },
     getHelp() {
       return this.currentFriend || this.currentFoe || this.selectedUnit
