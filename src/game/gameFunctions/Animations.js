@@ -7,7 +7,7 @@ export const createAnimations = (scene) => {
     frameRate: 12,
     repeat: -1
   })
-  
+
   scene.anims.create({
     key: 'soldierWalk',
     frames: scene.anims.generateFrameNumbers('Soldier', {
@@ -16,7 +16,7 @@ export const createAnimations = (scene) => {
     frameRate: 12,
     repeat: -1
   })
-  
+
   scene.anims.create({
     key: 'soldierMeleeAttack',
     frames: scene.anims.generateFrameNumbers('Soldier', {
@@ -25,7 +25,7 @@ export const createAnimations = (scene) => {
     frameRate: 12,
     repeat: 0
   })
-  
+
   scene.anims.create({
     key: 'soldierBowAttack',
     frames: scene.anims.generateFrameNumbers('Soldier', {
@@ -35,7 +35,7 @@ export const createAnimations = (scene) => {
     frameRate: 12,
     repeat: 0
   })
-  
+
   scene.anims.create({
     key: 'soldierDamage',
     frames: scene.anims.generateFrameNumbers('Soldier', {
@@ -44,7 +44,7 @@ export const createAnimations = (scene) => {
     frameRate: 12,
     repeat: 0
   })
-  
+
   scene.anims.create({
     key: 'soldierDeath',
     frames: scene.anims.generateFrameNumbers('Soldier', {
@@ -117,6 +117,15 @@ export const createOverworldAnimations = (scene) => {
     key: 'overworldOrcIdle',
     frames: scene.anims.generateFrameNumbers('overworldEntities', {
       frames: [60, 61]
+    }),
+    frameRate: 4,
+    repeat: -1
+  })
+
+  scene.anims.create({
+    key: 'merchantIdle',
+    frames: scene.anims.generateFrameNumbers('merchant', {
+      frames: [0, 1]
     }),
     frameRate: 4,
     repeat: -1

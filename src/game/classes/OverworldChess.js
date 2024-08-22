@@ -1,6 +1,6 @@
-import { EventBus } from '../EventBus';
+import { EventBus } from '../EventBus'
 import { killChessAt } from '../helpers.js'
-import { MoveableMarker, OverworldActionMarker } from './Markers.js'
+import { MoveableMarker } from './Markers.js'
 
 export class OverworldChess extends Phaser.GameObjects.Container {
   constructor(board, scene, x, y, animation, tileXY) {
@@ -15,6 +15,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     this.selector.setAlpha(0)
     this.selector.scale = 1.8
     this.bringToTop(this.sprite)
+    this.units = []
 
     this.scene.topGroup.add(this)
 

@@ -8,6 +8,9 @@ import { OverworldChess } from '../classes/OverworldChess.js'
 import { createOverworldAnimations } from '../gameFunctions/Animations.js'
 import { OverworldFriend } from '../classes/OverworldFriend.js'
 import { OverworldFoe } from '../classes/OverworldFoe.js'
+import { SoldierC } from '../classes/Soldier.js'
+import { OrcEnemy } from '../classes/Enemies.js'
+import { BuildingFriend } from '../classes/BuildingFriend.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -60,15 +63,18 @@ export class Overworld extends Scene {
 
     this.test.setDepth(this.test.y)
 
-    this.test2 = this.add.sprite(0, 0, 'castle')
-    this.board.addChess(this.test2, 1, 4, 1)
-    this.test2.y = this.test2.y - 3
-    this.test2.setScale(0.8)
+    // this.test2 = this.add.sprite(0, 0, 'castle')
+    // this.board.addChess(this.test2, 1, 4, 1)
+    // this.test2.y = this.test2.y - 3
+    // this.test2.setScale(0.8)
 
-    this.test2.setDepth(this.test2.y)
+    // this.test2.setDepth(this.test2.y)
 
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
+    this.castle = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
+      this.scene.switch('Merchant')
+    })
 
     console.log(this)
 
@@ -80,9 +86,13 @@ export class Overworld extends Scene {
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
 
-    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1')
-    this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2')
-    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle')
+    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [SoldierC])
+    this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2', [
+      SoldierC,
+      SoldierC,
+      SoldierC
+    ])
+    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle', [OrcEnemy])
 
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0

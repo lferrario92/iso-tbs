@@ -156,10 +156,6 @@ export class Game extends Scene {
         } else {
           currentTurn = 0
 
-          console.log(store)
-          // kill overworld unit
-          // clear overworld UI
-
           store.warData.targetArmy.overWorldChess.destroy()
           EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
 

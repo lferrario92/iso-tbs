@@ -8,6 +8,7 @@ import { OrcEnemy } from '../classes/Enemies'
 export const useGameStore = defineStore('game', {
   state: () => ({
     selectedUnit: null,
+    selectedBuilding: null,
     selector: null,
     fightCutscene: null,
     currentFriend: {

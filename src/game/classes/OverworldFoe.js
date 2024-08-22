@@ -3,9 +3,10 @@ import { OverworldActionMarker } from './Markers'
 import { OverworldChess } from './OverworldChess'
 
 export class OverworldFoe extends OverworldChess {
-  constructor(board, scene, x, y, animation, tileXY) {
+  constructor(board, scene, x, y, animation, units, tileXY) {
     super(board, scene, x, y, animation, tileXY)
     this.isEnemy = true
+    this.units = units
 
     this.on(
       'board.pointerdown',

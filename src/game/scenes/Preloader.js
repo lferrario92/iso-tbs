@@ -41,6 +41,11 @@ export class Preloader extends Scene {
     this.load.image('secondaryAttackImage', 'critical_boost.png')
     this.load.image('castle', 'castletest2.png')
 
+    this.load.spritesheet('merchant', 'merchant.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    })
+
     this.load.spritesheet('eye', 'eye.png', {
       frameWidth: 32,
       frameHeight: 32

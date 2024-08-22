@@ -147,12 +147,12 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
           level,
           attackingFrom: this.rexChess.board.directionBetween(invader, target),
           invadingArmy: {
-            units: [SoldierC, SoldierC],
+            units: invader.units || [SoldierC],
             modifiers: null,
             overWorldChess: invader
           },
           targetArmy: {
-            units: [OrcEnemy],
+            units: target.units || [OrcEnemy],
             modifiers: null,
             overWorldChess: target
           }

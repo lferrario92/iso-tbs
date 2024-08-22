@@ -1,16 +1,15 @@
 import { EventBus } from '../EventBus'
+import { Building } from './Building'
 import { OverworldActionMarker } from './Markers'
-import { OverworldChess } from './OverworldChess'
 
-export class OverworldFriend extends OverworldChess {
-  constructor(board, scene, x, y, animation, units, tileXY) {
-    super(board, scene, x, y, animation, tileXY)
+export class BuildingFriend extends Building {
+  constructor(board, scene, x, y, sprite, callback, tileXY) {
+    super(board, scene, x, y, sprite, tileXY)
 
-    this.units = units
     this.on(
       'board.pointerdown',
       function () {
-        this.select()
+        callback()
       },
       this
     )
@@ -46,12 +45,8 @@ export class OverworldFriend extends OverworldChess {
       return
     }
     this.selector.setAlpha(1)
-    EventBus.emit('selectUnit', this)
+    EventBus.emit('selectBuilding', this)
     EventBus.emit('clearUI', this)
-    // this.setFillStyle(0x2541b2, 1)
-    if (!this.hasMoved && !this.hasActed) {
-      this.showMoveableArea()
-    }
     if (!this.hasActed) {
       this.showPossibleActions()
     }
