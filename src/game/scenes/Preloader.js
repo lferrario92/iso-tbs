@@ -41,6 +41,9 @@ export class Preloader extends Scene {
     this.load.image('secondaryAttackImage', 'critical_boost.png')
     this.load.image('castle', 'castletest2.png')
 
+    // this.load.tilemapTiledJSON('map', 'test.json')
+    this.load.tilemapCSV('map', 'test.csv')
+
     this.load.spritesheet('merchant', 'merchant.png', {
       frameWidth: 32,
       frameHeight: 32

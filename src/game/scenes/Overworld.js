@@ -73,7 +73,10 @@ export class Overworld extends Scene {
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
     this.castle = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
-      this.scene.switch('Merchant')
+      //   this.scene.switch('Merchant')
+    })
+    this.castle2 = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
+      //   this.scene.switch('Merchant')
     })
 
     console.log(this)
@@ -92,7 +95,13 @@ export class Overworld extends Scene {
       SoldierC,
       SoldierC
     ])
-    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle', [OrcEnemy])
+    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle', [
+      OrcEnemy,
+      OrcEnemy,
+      OrcEnemy
+    ])
+
+    this.actors = [this.player, this.player2, this.player3, this.castle, this.castle2, this.test]
 
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0
@@ -100,9 +109,8 @@ export class Overworld extends Scene {
   }
 
   update() {
-    this.player.setDepth(this.player.y)
-    this.player2.setDepth(this.player2.y)
-    this.player3.setDepth(this.player3.y)
-    this.test.setDepth(this.test.y)
+    this.actors.forEach((actor) => {
+      actor.setDepth(actor.y)
+    })
   }
 }

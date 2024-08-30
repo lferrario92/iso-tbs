@@ -218,7 +218,7 @@ export class EnemyChess extends Phaser.GameObjects.Container {
   async checkPossibleAction() {
     this.showPossibleActions()
     if (this._actionMarkers.length) {
-      if(this._actionMarkers[0].x < this.x) {
+      if (this._actionMarkers[0].x < this.x) {
         this.sprite.setFlipX(true)
       } else {
         this.sprite.setFlipX(false)
@@ -233,7 +233,7 @@ export class EnemyChess extends Phaser.GameObjects.Container {
       })
 
       this.scene.startCutscene()
-    //   killChessAt(this._actionMarkers[0].rexChess)
+      //   killChessAt(this._actionMarkers[0].rexChess)
       //   this._actionMarkers.splice(0)
       this.hidePossibleActions()
 

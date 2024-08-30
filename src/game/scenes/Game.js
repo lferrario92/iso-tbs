@@ -129,12 +129,13 @@ export class Game extends Scene {
     // var enemy = new EyeBallEnemy(board, this, 0, 0)
     // var enemy = new OrcEnemy(board, this, 0, 0)
     // var enemy2 = new OrcEnemy(board, this, 0, 0)
-    let { army1, army2 } = []
+    this.army1 = []
+    this.army2 = []
 
-    army1 = store.warData.invadingArmy.units.map(
+    this.army1 = store.warData.invadingArmy.units.map(
       (unit) => new unit(board, this, 0, 0, placingCoords.invading)
     )
-    army2 = store.warData.targetArmy.units.map(
+    this.army2 = store.warData.targetArmy.units.map(
       (unit) => new unit(board, this, 0, 0, placingCoords.target)
     )
 
@@ -144,12 +145,12 @@ export class Game extends Scene {
     EventBus.on('endTurn', () => {
       currentTurn++
       if (currentTurn % 2 == 0) {
-        playerTurnStart(army1)
+        playerTurnStart(this.army1)
       } else {
-        if (army2.some((x) => x.active)) {
-          let players = army1.filter((x) => x.active)
+        if (this.army2.some((x) => x.active)) {
+          let players = this.army1.filter((x) => x.active)
           enemyTurnStart(
-            army2.filter((x) => x.active),
+            this.army2.filter((x) => x.active),
             players
           )
           // enemyStore.enemyTurn([enemy, enemy2].filter((x) => x.active), players)

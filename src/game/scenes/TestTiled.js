@@ -48,7 +48,7 @@ export class TiledEx extends Scene {
     })
 
     this.load.setPath('assets')
-    this.load.tilemapTiledJSON('map', 'test.json')
+    // this.load.tilemapTiledJSON('map', 'test.json')
   }
 
   create() {

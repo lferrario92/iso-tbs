@@ -42,8 +42,8 @@ export class MainMenu extends Scene {
       .setInteractive()
 
     text.on('pointerdown', () => {
-      //   this.scene.start('Overworld')
-      this.scene.start('TiledEx')
+      this.scene.start('Overworld')
+      //   this.scene.start('TiledEx')
     })
 
     EventBus.emit('current-scene-ready', this)
