@@ -48,6 +48,8 @@ export class Merchant extends Scene {
       { key: 'cards', frame: 1, price: 50 }
     ]
 
+    this.renderCurrentCards(this, store)
+
     marketCards.forEach((card, index) => {
       let theCard = this.createCard(
         this,
@@ -71,6 +73,8 @@ export class Merchant extends Scene {
             theCard.clearFX()
 
             theCard.removeInteractive()
+
+            this.renderCurrentCards(this, store)
           } else {
             console.log('no te alcanza')
           }
@@ -117,6 +121,35 @@ export class Merchant extends Scene {
     //   rotateY: 360,
     //   repeat: -1
     // })
+  }
+
+  renderCurrentCards (scene, store) {
+    store.cards.forEach((card, index) => {
+      let theCard = scene.createCard(
+        scene,
+        150 * (index + 1),
+        550,
+        card.key,
+        card.frame,
+        card.price,
+        () => {
+          store.sellCard(index)
+          theCard.removeInteractive()
+          console.log(store.money)
+
+          theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
+          theCard.getByName('sign').preFX.addColorMatrix().grayscale(1)
+          this.add.tween({
+            targets: theCard,
+            duration: 500,
+            repeatDelay: 0,
+            rotateY: 360,
+            repeat: 0,
+            scale: 0
+          }).on('complete', () => { theCard.destroy() });
+        }
+      )
+    })
   }
 
   createCard(scene, x, y, key, frame, price, callback) {

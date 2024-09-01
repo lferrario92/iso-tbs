@@ -35,7 +35,7 @@ export const useGameStore = defineStore('game', {
       }
     },
     money: 200,
-    cards: []
+    cards: [{ key: 'cards', frame: 1, price: 50 }]
   }),
   actions: {
     selectUnit(unit) {
@@ -48,6 +48,16 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
+    },
+    sellCard (index) {
+      this.addMoney(this.cards[index].price)
+      this.removeCard(index)
+    },
+    addCard (card) {
+      this.cards.push(card)
+    },
+    removeCard (index) {
+      this.cards.splice(index, 1)
     },
     addMoney(amount) {
       this.money = this.money + amount
