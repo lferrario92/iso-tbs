@@ -33,7 +33,9 @@ export const useGameStore = defineStore('game', {
         modifiers: null,
         overWorldChess: null
       }
-    }
+    },
+    money: 200,
+    cards: []
   }),
   actions: {
     selectUnit(unit) {
@@ -46,6 +48,12 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
+    },
+    addMoney(amount) {
+      this.money = this.money + amount
+    },
+    removeMoney(amount) {
+      this.money = this.money - amount
     },
     removeAllMobableMarker(chess) {
       if (!chess.rexChess.board) {

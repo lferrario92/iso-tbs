@@ -76,7 +76,7 @@ export class Overworld extends Scene {
       //   this.scene.switch('Merchant')
     })
     this.castle2 = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
-      //   this.scene.switch('Merchant')
+      this.scene.switch('Merchant')
     })
 
     console.log(this)

@@ -44,6 +44,15 @@ export class Preloader extends Scene {
     // this.load.tilemapTiledJSON('map', 'test.json')
     this.load.tilemapCSV('map', 'test.csv')
 
+    this.load.image('card', 'https://labs.phaser.io/assets/games/card-memory-game/cards/card-4.png')
+
+    this.load.spritesheet('cards', 'pixelCardAssest.png', {
+      frameWidth: 114,
+      frameHeight: 128
+    })
+
+    this.load.image('sign', 'sign.png')
+
     this.load.spritesheet('merchant', 'merchant.png', {
       frameWidth: 32,
       frameHeight: 32
