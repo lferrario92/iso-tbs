@@ -51,7 +51,17 @@ export class Preloader extends Scene {
       frameHeight: 128
     })
 
-    this.load.image('sign', 'sign.png')
+    this.load.spritesheet('cardsBack', 'cardsBack.png', {
+      frameWidth: 100,
+      frameHeight: 128
+    })
+
+    this.load.spritesheet('cardIcons', 'cardIcons.png', {
+      frameWidth: 22,
+      frameHeight: 20
+    })
+
+    this.load.image('cardOver', 'cardOver.png')
 
     this.load.spritesheet('merchant', 'merchant.png', {
       frameWidth: 32,

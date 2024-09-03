@@ -3,8 +3,8 @@ import { Building } from './Building'
 import { OverworldActionMarker } from './Markers'
 
 export class BuildingFriend extends Building {
-  constructor(board, scene, x, y, sprite, callback, tileXY) {
-    super(board, scene, x, y, sprite, tileXY)
+  constructor(board, scene, x, y, sprite, callback, frame, tileXY) {
+    super(board, scene, x, y, sprite, frame, tileXY)
 
     this.on(
       'board.pointerdown',

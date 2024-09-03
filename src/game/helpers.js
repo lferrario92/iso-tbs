@@ -1,28 +1,20 @@
-import Phaser from "phaser"
-import { ActionMarker } from "./classes/Markers"
+import Phaser from 'phaser'
+import { ActionMarker } from './classes/Markers'
 
 export const Random = Phaser.Math.Between
 
 export const RandomFromArray = Phaser.Utils.Array.GetRandom
 
 export const killChessAt = (chess) => {
-  var chessToKill = chess.board.tileXYZToChess(
-    chess.tileXYZ.x,
-    chess.tileXYZ.y,
-    1
-  )
+  var chessToKill = chess.board.tileXYZToChess(chess.tileXYZ.x, chess.tileXYZ.y, 1)
   chessToKill.hideMoveableArea && chessToKill.hideMoveableArea()
   chessToKill.hidePossibleActions && chessToKill.hidePossibleActions()
-  
+
   chess.board.removeChess(chessToKill, null, null, null, true)
 }
 
 export const getUnitAt = (chess) => {
-  return chess.board.tileXYZToChess(
-    chess.tileXYZ.x,
-    chess.tileXYZ.y,
-    1
-  )
+  return chess.board.tileXYZToChess(chess.tileXYZ.x, chess.tileXYZ.y, 1)
 }
 
 export const getAvailableTile = (board, tileXY, range) => {
@@ -52,7 +44,7 @@ export const damageUnit = (chess, damage) => {
   var chessToDamage = chess.board.tileXYZToChess(chess.tileXYZ.x, chess.tileXYZ.y, 1)
   chessToDamage.hideMoveableArea && chessToDamage.hideMoveableArea()
   chessToDamage.hidePossibleActions && chessToDamage.hidePossibleActions()
-  
+
   chessToDamage.takeDamage(damage)
 }
 
@@ -64,3 +56,65 @@ export const addActionMarkersTo = (chess, coordList) => {
 }
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+
+export const createCard = (
+  scene,
+  x,
+  y,
+  key,
+  frame,
+  price,
+  turns,
+  back,
+  icon,
+  modifier,
+  amount,
+  text,
+  callback
+) => {
+  let card = new Phaser.GameObjects.Container(scene, x, y, [])
+
+  card.setData('raw', { key, frame, price, turns, back, icon, modifier, amount, text })
+  card.setData('price', price)
+  let width = 100
+  let height = 128
+
+  let front = scene.add.image(0, 0, 'cardsBack', frame)
+  front.name = 'front'
+  let sold = scene.add.image(0, 0, 'star')
+  sold.name = 'sold'
+  let over = scene.add.image(0, 0, 'cardOver', 0)
+  over.name = 'over'
+  let iconGraphic = scene.add.image(1, -29, 'cardIcons', icon)
+  iconGraphic.name = 'iconGraphic'
+
+  let textObject = scene.add.text(-40, 20, text, {
+    fontFamily: 'PublicPixel',
+    fontSize: '8px',
+    align: 'left'
+  })
+
+  let priceText = scene.add.text(-38, height / 2 - 12, `${price}`, {
+    fontFamily: 'PublicPixel',
+    fontSize: '6px',
+    align: 'left'
+  })
+
+  let turnsText = scene.add.text(17, height / 2 - 12, `(${turns})`, {
+    fontFamily: 'PublicPixel',
+    fontSize: '6px',
+    align: 'left'
+  })
+
+  sold.setAlpha(0)
+
+  card.add([front, over, textObject, iconGraphic, priceText, turnsText, sold])
+  card.setScale(1)
+  card.postFX.addShine(1, 0.2, 5)
+
+  card.setSize(width, height)
+  card.setInteractive().on('pointerdown', callback)
+  card.setScale(2)
+
+  return scene.add.existing(card)
+}

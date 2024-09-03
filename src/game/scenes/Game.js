@@ -107,12 +107,7 @@ export class Game extends Scene {
         break
     }
 
-    // const selector = this.add.sprite(0, 0, 'selector')
-    // selector.scale = 2
-    // selector.setAlpha(0)
-
-    // const store = useGameStore()
-    // store.selector = selector
+    // handle instant modifiers
 
     camera(this)
     buildDrag(this)
@@ -144,6 +139,7 @@ export class Game extends Scene {
 
     EventBus.on('endTurn', () => {
       currentTurn++
+      // handle pending modifiers
       if (currentTurn % 2 == 0) {
         playerTurnStart(this.army1)
       } else {

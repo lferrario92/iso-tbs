@@ -11,6 +11,11 @@ export const useGameStore = defineStore('game', {
     selectedBuilding: null,
     selector: null,
     fightCutscene: null,
+    createdAnimations: {
+      game: false,
+      overworld: false,
+      market: false
+    },
     currentFriend: {
       attackType: null,
       texture: {
@@ -35,7 +40,19 @@ export const useGameStore = defineStore('game', {
       }
     },
     money: 200,
-    cards: [{ key: 'cards', frame: 1, price: 50 }]
+    cards: [
+      {
+        key: 'cards',
+        frame: 0,
+        price: 500,
+        turns: -3,
+        back: 0,
+        icon: 2,
+        modifier: 'crit',
+        amount: 10,
+        text: 'texto'
+      }
+    ]
   }),
   actions: {
     selectUnit(unit) {
@@ -49,14 +66,14 @@ export const useGameStore = defineStore('game', {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
     },
-    sellCard (index) {
+    sellCard(index) {
       this.addMoney(this.cards[index].price)
       this.removeCard(index)
     },
-    addCard (card) {
-      this.cards.push(card)
+    addCard(card) {
+      this.cards.push(card.getData('raw'))
     },
-    removeCard (index) {
+    removeCard(index) {
       this.cards.splice(index, 1)
     },
     addMoney(amount) {
@@ -64,6 +81,19 @@ export const useGameStore = defineStore('game', {
     },
     removeMoney(amount) {
       this.money = this.money - amount
+    },
+    handleModifiers(army) {
+      // {
+      //   "key": "cards",
+      //   "frame": 1,
+      //   "price": 50,
+      //   "turns": -3,
+      //   "back": 0,
+      //   "icon": 0,
+      //   "modifier": "crit",
+      //   "amount": 10,
+      //   "text": "texto"
+      // }
     },
     removeAllMobableMarker(chess) {
       if (!chess.rexChess.board) {

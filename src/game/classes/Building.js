@@ -3,11 +3,11 @@ import { killChessAt } from '../helpers.js'
 import { MoveableMarker } from './Markers.js'
 
 export class Building extends Phaser.GameObjects.Container {
-  constructor(board, scene, x, y, sprite, tileXY) {
+  constructor(board, scene, x, y, sprite, frame, tileXY) {
     super(scene, x, y, [])
 
     this.selector = scene.add.image(0, 0, 'overworldIndicators', 5)
-    this.sprite = scene.add.sprite(0, -4, sprite, 0)
+    this.sprite = scene.add.sprite(0, -4, sprite, frame || 0)
     this.texture = this.sprite.texture
 
     this.add(this.sprite)
