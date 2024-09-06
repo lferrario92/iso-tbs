@@ -44,6 +44,8 @@ export class Game extends Scene {
     const store = useGameStore()
     let currentTurn = 0
 
+    console.log(store)
+
     // const enemyStore = useEnemyStore()
 
     const center = {
@@ -109,6 +111,29 @@ export class Game extends Scene {
 
     // handle instant modifiers
 
+    this.activeModifiers = {
+      buffs: [],
+      debuffs: []
+    }
+
+    // {
+    //   key: 'cards',
+    //   frame: 0,
+    //   price: 500,
+    //   turns: -3,
+    //   back: 0,
+    //   icon: 2,
+    //   modifier: 'crit',
+    //   amount: 10,
+    //   text: 'texto'
+    // }
+
+    this.initModifiers(this, store)
+
+    console.log(store)
+    console.log(this)
+    // store.warData.invadingArmy
+
     camera(this)
     buildDrag(this)
     createAnimations(this)
@@ -117,13 +142,6 @@ export class Game extends Scene {
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
 
-    // var chessA = new SoldierC(board, this, 0, 0)
-    // var chessB = new SoldierC(board, this, 0, 0)
-    // var chessC = new SoldierC(board, this, 0, 0)
-
-    // var enemy = new EyeBallEnemy(board, this, 0, 0)
-    // var enemy = new OrcEnemy(board, this, 0, 0)
-    // var enemy2 = new OrcEnemy(board, this, 0, 0)
     this.army1 = []
     this.army2 = []
 
@@ -168,6 +186,19 @@ export class Game extends Scene {
     // generateGameUI(this)
 
     EventBus.emit('current-scene-ready', this)
+  }
+
+  initModifiers(scene, store) {
+    store.warData.invadingArmy.modifiers.forEach((modifier) => {
+      this.handleModifier(scene, store, modifier)
+    })
+    store.warData.targetArmy.modifiers.forEach((modifier) => {
+      this.handleModifier(scene, store, modifier)
+    })
+  }
+
+  handleModifier(scene, store, modifier) {
+    debugger
   }
 
   update(time, delta) {

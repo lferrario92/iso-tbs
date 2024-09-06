@@ -123,6 +123,9 @@ export const useGameStore = defineStore('game', {
         ...data
       }
     },
+    setInvadingModifiers(modifiers) {
+      this.warData.invadingArmy.modifiers = modifiers
+    },
     getHelp() {
       return this.currentFriend || this.currentFoe || this.selectedUnit
     },

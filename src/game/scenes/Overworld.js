@@ -73,7 +73,7 @@ export class Overworld extends Scene {
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
     this.castle = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
-      //   this.scene.switch('Merchant')
+      this.scene.switch('Merchant')
     })
     this.castle2 = new BuildingFriend(
       this.board,
@@ -82,7 +82,7 @@ export class Overworld extends Scene {
       0,
       'overworldTiles',
       () => {
-        this.scene.switch('Merchant')
+        this.scene.switch('PreBattle')
       },
       44
     )

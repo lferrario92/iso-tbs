@@ -23,7 +23,7 @@ export class Merchant extends Scene {
     this.merchantDude.play('merchantIdle')
 
     this.exit = this.add
-      .text(10, this.scale.height - 20, `exit`, {
+      .text(10, this.scale.height - 20, `exitexitexitexitexitexitexit`, {
         fontFamily: 'PublicPixel',
         fontSize: '12px',
         align: 'left'
@@ -58,43 +58,29 @@ export class Merchant extends Scene {
     })
 
     marketCards.forEach((card, index) => {
-      let theCard = createCard(
-        this,
-        200 * (index + 1),
-        170,
-        card.key,
-        card.frame,
-        card.price,
-        card.turns,
-        card.back,
-        card.icon,
-        card.modifier,
-        card.amount,
-        card.text,
-        () => {
-          let price = theCard.getData('price')
+      let theCard = createCard(this, 200 * (index + 1), 170, card, () => {
+        let price = theCard.getData('price')
 
-          if (store.money >= price) {
-            store.removeMoney(theCard.getData('price'))
-            console.log('current money ', store.money)
-            theCard.getByName('sold').setAlpha(1)
+        if (store.money >= price) {
+          store.removeMoney(theCard.getData('price'))
+          console.log('current money ', store.money)
+          theCard.getByName('sold').setAlpha(1)
 
-            console.log(theCard)
-            this.yourCash.setText(`Money: ${store.money}`)
+          console.log(theCard)
+          this.yourCash.setText(`Money: ${store.money}`)
 
-            theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
-            theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
-            theCard.clearFX()
+          theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
+          theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
+          theCard.clearFX()
 
-            theCard.removeInteractive()
+          theCard.removeInteractive()
 
-            store.addCard(theCard)
-            this.renderCurrentCards(this, store)
-          } else {
-            console.log('no te alcanza')
-          }
+          store.addCard(theCard)
+          this.renderCurrentCards(this, store)
+        } else {
+          console.log('no te alcanza')
         }
-      )
+      })
     })
   }
 
@@ -105,41 +91,27 @@ export class Merchant extends Scene {
     scene.playerCards.splice(0)
 
     store.cards.forEach((card, index) => {
-      let theCard = createCard(
-        scene,
-        150 * (index + 1),
-        550,
-        card.key,
-        card.frame,
-        card.price,
-        card.turns,
-        card.back,
-        card.icon,
-        card.modifier,
-        card.amount,
-        card.text,
-        () => {
-          store.sellCard(index)
-          theCard.removeInteractive()
-          console.log(store.money)
+      let theCard = createCard(scene, 150 * (index + 1), 550, card, () => {
+        store.sellCard(index)
+        theCard.removeInteractive()
+        console.log(store.money)
 
-          theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
-          theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
-          theCard.getByName('iconGraphic').preFX.addColorMatrix().grayscale(1)
+        theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
+        theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
+        theCard.getByName('iconGraphic').preFX.addColorMatrix().grayscale(1)
 
-          scene.add.tween({
-            targets: theCard,
-            duration: 1000,
-            repeat: 0,
-            ease: 'back.in',
-            scale: 0
-          })
-          // .on('complete', () => {
-          //   theCard.destroy()
-          // })
-          scene.yourCash.setText(`Money: ${store.money}`)
-        }
-      )
+        scene.add.tween({
+          targets: theCard,
+          duration: 1000,
+          repeat: 0,
+          ease: 'back.in',
+          scale: 0
+        })
+        // .on('complete', () => {
+        //   theCard.destroy()
+        // })
+        scene.yourCash.setText(`Money: ${store.money}`)
+      })
 
       scene.playerCards.push(theCard)
     })

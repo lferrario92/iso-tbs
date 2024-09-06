@@ -164,15 +164,7 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
 
         // chess.scene.scene.launch('Game')
 
-        let gamescene = chess.scene.scene.switch('Game').launch('UI')
-
-        gamescene.scene.events.once(
-          'destroy',
-          function () {
-            this.scene.add('Game', Game, true)
-          },
-          this
-        )
+        chess.scene.scene.switch('PreBattle')
       },
       this
     )

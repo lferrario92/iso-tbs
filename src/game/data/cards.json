@@ -8,6 +8,7 @@
     "icon": 0,
     "modifier": "crit",
     "amount": 10,
+    "active": 4,
     "text": "texto"
   },
   {
@@ -19,6 +20,7 @@
     "icon": 2,
     "modifier": "crit",
     "amount": 10,
+    "active": 4,
     "text": "texto"
   }
 ]

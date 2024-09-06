@@ -57,50 +57,36 @@ export const addActionMarkersTo = (chess, coordList) => {
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms))
 
-export const createCard = (
-  scene,
-  x,
-  y,
-  key,
-  frame,
-  price,
-  turns,
-  back,
-  icon,
-  modifier,
-  amount,
-  text,
-  callback
-) => {
+export const createCard = (scene, x, y, cardData, callback) => {
   let card = new Phaser.GameObjects.Container(scene, x, y, [])
 
-  card.setData('raw', { key, frame, price, turns, back, icon, modifier, amount, text })
-  card.setData('price', price)
+  card.setData('raw', cardData)
+  card.setData('price', cardData.price)
   let width = 100
   let height = 128
 
-  let front = scene.add.image(0, 0, 'cardsBack', frame)
+  let front = scene.add.image(0, 0, 'cardsBack', cardData.frame)
   front.name = 'front'
   let sold = scene.add.image(0, 0, 'star')
   sold.name = 'sold'
   let over = scene.add.image(0, 0, 'cardOver', 0)
   over.name = 'over'
-  let iconGraphic = scene.add.image(1, -29, 'cardIcons', icon)
+  let iconGraphic = scene.add.image(1, -29, 'cardIcons', cardData.icon)
   iconGraphic.name = 'iconGraphic'
 
-  let textObject = scene.add.text(-40, 20, text, {
+  let textObject = scene.add.text(-40, 20, cardData.text, {
     fontFamily: 'PublicPixel',
     fontSize: '8px',
     align: 'left'
   })
 
-  let priceText = scene.add.text(-38, height / 2 - 12, `${price}`, {
+  let priceText = scene.add.text(-38, height / 2 - 12, `${cardData.price}`, {
     fontFamily: 'PublicPixel',
     fontSize: '6px',
     align: 'left'
   })
 
-  let turnsText = scene.add.text(17, height / 2 - 12, `(${turns})`, {
+  let turnsText = scene.add.text(17, height / 2 - 12, `(${cardData.turns})`, {
     fontFamily: 'PublicPixel',
     fontSize: '6px',
     align: 'left'
