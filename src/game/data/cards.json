@@ -3,10 +3,10 @@
     "key": "cards",
     "frame": 1,
     "price": 50,
-    "turns": 1,
+    "turns": 2,
     "back": 0,
     "icon": 0,
-    "modifier": "crit",
+    "modifier": "atkUp",
     "amount": 10,
     "active": 4,
     "text": "texto"

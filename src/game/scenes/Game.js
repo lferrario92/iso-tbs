@@ -111,10 +111,14 @@ export class Game extends Scene {
 
     // handle instant modifiers
 
-    this.activeModifiers = {
-      buffs: [],
-      debuffs: []
-    }
+    this.activeModifiers = []
+    this.pendingModifiers = []
+
+    this.activeModifiersText = this.add.text(25, 25, `active modifiers`, {
+      fontFamily: 'PublicPixel',
+      fontSize: '12px',
+      align: 'left'
+    })
 
     // {
     //   key: 'cards',
@@ -159,6 +163,8 @@ export class Game extends Scene {
       currentTurn++
       // handle pending modifiers
       if (currentTurn % 2 == 0) {
+        this.updateModifiers(this, store)
+        console.log('active: ', this.activeModifiers)
         playerTurnStart(this.army1)
       } else {
         if (this.army2.some((x) => x.active)) {
@@ -190,15 +196,35 @@ export class Game extends Scene {
 
   initModifiers(scene, store) {
     store.warData.invadingArmy.modifiers.forEach((modifier) => {
-      this.handleModifier(scene, store, modifier)
+      if (modifier.turns > 0) {
+        this.activeModifiers.push(modifier)
+      } else {
+        this.pendingModifiers.push(modifier)
+      }
     })
-    store.warData.targetArmy.modifiers.forEach((modifier) => {
-      this.handleModifier(scene, store, modifier)
-    })
+    // store.warData.targetArmy.modifiers.forEach((modifier) => {
+    //   this.handleModifier(scene, store, modifier)
+    // })
   }
 
-  handleModifier(scene, store, modifier) {
-    debugger
+  updateModifiers(scene, store) {
+    this.activeModifiers.forEach((modifier, index) => {
+      modifier.turns = modifier.turns - 1
+
+      if (modifier.turns <= 0) {
+        this.activeModifiers.splice(index, 1)
+      }
+    })
+
+    this.pendingModifiers.forEach((modifier, index) => {
+      modifier.turns = modifier.turns + 1
+
+      if (modifier.turns >= 0) {
+        modifier.turns = modifier.active
+        this.activeModifiers.push(modifier)
+        this.pendingModifiers.splice(index, 1)
+      }
+    })
   }
 
   update(time, delta) {

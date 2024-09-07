@@ -76,6 +76,16 @@ export class BattleCutscene extends Scene {
       textConfig
     )
 
+    let currentFriendDamage = store.currentFriend.damage
+
+    if (store.currentFriend.scene.activeModifiers.length) {
+      store.currentFriend.scene.activeModifiers.forEach((x) => {
+        if (x.modifier === 'atkUp') {
+          currentFriendDamage = currentFriendDamage + x.amount
+        }
+      })
+    }
+
     friend.playAfterDelay(friendAttack, 1000)
     foe.playAfterDelay(foeDamage, damageDelay)
 
@@ -97,7 +107,7 @@ export class BattleCutscene extends Scene {
 
     foe.on('animationcomplete', (anim) => {
       if (anim.key === foeDamage) {
-        let result = store.currentFoe.takeDamage(store.currentFriend.damage)
+        let result = store.currentFoe.takeDamage(currentFriendDamage)
         this.foeHealth.setText(store.currentFoe.health)
 
         if (result === 'die') {
