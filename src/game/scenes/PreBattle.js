@@ -26,14 +26,14 @@ export class PreBattle extends Scene {
     this.playerCards = []
 
     store.cards.forEach((card, index) => {
-      let theCard = createCard(this, 150 * (index + 1), 550, card, () => {
+      let theCard = createCard(this, 110 * (index + 1), 130, card, () => {
         if (theCard.getData('selected')) {
           theCard.getByName('front').clearFX()
           theCard.getByName('over').clearFX()
           theCard.getByName('iconGraphic').clearFX()
 
           this.tweens.remove(theCard.tween)
-          theCard.setScale(2)
+          theCard.setScale(1)
           theCard.setData('selected', false)
         } else {
           theCard.getByName('front').preFX.addColorMatrix().brown()
@@ -46,7 +46,7 @@ export class PreBattle extends Scene {
             targets: theCard,
             duration: 500,
             repeat: -1,
-            scale: 2.2,
+            scale: 1.2,
             yoyo: true
           })
         }
@@ -63,6 +63,7 @@ export class PreBattle extends Scene {
       .setInteractive()
 
     this.exit.on('pointerdown', () => {
+      this.scene.stop('PreBattle')
       this.scene.switch('Overworld')
     })
 
@@ -80,9 +81,27 @@ export class PreBattle extends Scene {
         .map((card) => card.getData('raw'))
       console.log(cardsToApply)
 
+      let cardsToDelete = this.playerCards
+        .map((card, index) => (card.getData('selected') ? index : undefined))
+        .filter((x) => x != undefined)
+
+      store.cards.forEach((card, index) => {
+        if (cardsToDelete.includes(index)) {
+          store.cards[index] = undefined
+        }
+      })
+      store.cards = store.cards.filter((x) => x)
+
+      // store.cards = cardsToDelete.map((index) => {
+      //   store.cards[index] = undefined
+      //     return store.cards[index]
+      //   })
+      //   .filter((x) => x)
+
       store.setInvadingModifiers([...cardsToApply])
 
       let gamescene = this.scene.switch('Game').launch('UI')
+      this.scene.stop('PreBattle')
 
       gamescene.scene.events.once(
         'destroy',

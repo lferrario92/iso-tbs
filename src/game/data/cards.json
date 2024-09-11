@@ -1,26 +1,38 @@
 [
   {
     "key": "cards",
-    "frame": 1,
+    "frame": 0,
     "price": 50,
-    "turns": 2,
+    "turns": 1,
     "back": 0,
     "icon": 0,
     "modifier": "atkUp",
     "amount": 10,
     "active": 4,
-    "text": "texto"
+    "text": "ATKup +10"
   },
   {
     "key": "cards",
-    "frame": 0,
-    "price": 500,
-    "turns": -3,
+    "frame": 2,
+    "price": 50,
+    "turns": -1,
     "back": 0,
-    "icon": 2,
-    "modifier": "crit",
-    "amount": 10,
+    "icon": 0,
+    "modifier": "atkUp",
+    "amount": 20,
     "active": 4,
-    "text": "texto"
+    "text": "ATKup +20"
+  },
+  {
+    "key": "cards",
+    "frame": 2,
+    "price": 50,
+    "turns": -1,
+    "back": 0,
+    "icon": 0,
+    "modifier": "atkUpDown",
+    "amount": 20,
+    "active": 4,
+    "text": "ATK +20/-20"
   }
 ]

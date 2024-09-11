@@ -29,7 +29,7 @@ export class MainMenu extends Scene {
     // })
 
     let text = this.add
-      .text(512, 460, 'Play', {
+      .text(this.scale.width / 2, this.scale.height / 2, 'Play', {
         fontFamily: 'Arial Black',
         fontSize: 38,
         color: '#ffffff',

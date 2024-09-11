@@ -31,6 +31,7 @@ export class Merchant extends Scene {
       .setInteractive()
 
     this.exit.on('pointerdown', () => {
+      this.scene.stop('Merchant')
       this.scene.switch('Overworld')
     })
 
@@ -58,7 +59,7 @@ export class Merchant extends Scene {
     })
 
     marketCards.forEach((card, index) => {
-      let theCard = createCard(this, 200 * (index + 1), 170, card, () => {
+      let theCard = createCard(this, 110 * (index + 1), 100, card, () => {
         let price = theCard.getData('price')
 
         if (store.money >= price) {
@@ -77,6 +78,8 @@ export class Merchant extends Scene {
 
           store.addCard(theCard)
           this.renderCurrentCards(this, store)
+
+          console.log('store', store)
         } else {
           console.log('no te alcanza')
         }
@@ -91,7 +94,7 @@ export class Merchant extends Scene {
     scene.playerCards.splice(0)
 
     store.cards.forEach((card, index) => {
-      let theCard = createCard(scene, 150 * (index + 1), 550, card, () => {
+      let theCard = createCard(scene, 110 * (index + 1), 250, card, () => {
         store.sellCard(index)
         theCard.removeInteractive()
         console.log(store.money)
@@ -100,16 +103,17 @@ export class Merchant extends Scene {
         theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
         theCard.getByName('iconGraphic').preFX.addColorMatrix().grayscale(1)
 
-        scene.add.tween({
-          targets: theCard,
-          duration: 1000,
-          repeat: 0,
-          ease: 'back.in',
-          scale: 0
-        })
-        // .on('complete', () => {
-        //   theCard.destroy()
-        // })
+        scene.add
+          .tween({
+            targets: theCard,
+            duration: 1000,
+            repeat: 0,
+            ease: 'back.in',
+            scale: 0
+          })
+          .on('complete', () => {
+            theCard.destroy()
+          })
         scene.yourCash.setText(`Money: ${store.money}`)
       })
 

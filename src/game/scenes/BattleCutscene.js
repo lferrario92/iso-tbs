@@ -76,12 +76,23 @@ export class BattleCutscene extends Scene {
       textConfig
     )
 
-    let currentFriendDamage = store.currentFriend.damage
+    let vars = {
+      currentFriendDamage: store.currentFriend.damage,
+      currentFoeDamage: store.currentFoe.damage
+    }
 
     if (store.currentFriend.scene.activeModifiers.length) {
       store.currentFriend.scene.activeModifiers.forEach((x) => {
+        let target = ''
+
+        if (!store.isEnemyChess(store.currentFriend) && x.from === 'friend') {
+          target = 'Friend'
+        } else {
+          target = 'Foe'
+        }
+
         if (x.modifier === 'atkUp') {
-          currentFriendDamage = currentFriendDamage + x.amount
+          vars[`current${target}Damage`] = vars[`current${target}Damage`] + x.amount
         }
       })
     }
@@ -93,7 +104,7 @@ export class BattleCutscene extends Scene {
       if (anim.key === friendAttack) {
         friend.play(friendIdle)
       } else if (anim.key === friendDamage) {
-        let result = store.currentFriend.takeDamage(store.currentFoe.damage)
+        let result = store.currentFriend.takeDamage(vars['currentFoeDamage'])
         this.friendHealth.setText(store.currentFriend.health)
 
         if (result === 'die') {
@@ -107,7 +118,7 @@ export class BattleCutscene extends Scene {
 
     foe.on('animationcomplete', (anim) => {
       if (anim.key === foeDamage) {
-        let result = store.currentFoe.takeDamage(currentFriendDamage)
+        let result = store.currentFoe.takeDamage(vars['currentFriendDamage'])
         this.foeHealth.setText(store.currentFoe.health)
 
         if (result === 'die') {

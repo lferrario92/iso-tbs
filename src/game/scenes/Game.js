@@ -12,7 +12,7 @@ import { Soldier, SoldierC } from '../classes/Soldier'
 import { useGameStore } from '../stores/gameStore'
 import { useEnemyStore } from '../stores/enemyStore'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-import { generateGameUI } from '../gameFunctions/GenerateUI'
+import { generateGameUI, showModifiers } from '../gameFunctions/GenerateUI'
 import { createAnimations } from '../gameFunctions/Animations'
 import { getAvailableTile } from '../helpers'
 
@@ -44,7 +44,7 @@ export class Game extends Scene {
     const store = useGameStore()
     let currentTurn = 0
 
-    console.log(store)
+    console.log('store', store)
 
     // const enemyStore = useEnemyStore()
 
@@ -114,11 +114,11 @@ export class Game extends Scene {
     this.activeModifiers = []
     this.pendingModifiers = []
 
-    this.activeModifiersText = this.add.text(25, 25, `active modifiers`, {
-      fontFamily: 'PublicPixel',
-      fontSize: '12px',
-      align: 'left'
-    })
+    // this.activeModifiersText = this.add.text(25, 25, `active modifiers`, {
+    //   fontFamily: 'PublicPixel',
+    //   fontSize: '12px',
+    //   align: 'left'
+    // })
 
     // {
     //   key: 'cards',
@@ -133,6 +133,21 @@ export class Game extends Scene {
     // }
 
     this.initModifiers(this, store)
+
+    let activeUI = showModifiers(
+      this.scene.get('UI'),
+      10,
+      20,
+      this.activeModifiers,
+      'Active Modifiers'
+    )
+    let pendingUI = showModifiers(
+      this.scene.get('UI'),
+      150,
+      20,
+      this.pendingModifiers,
+      'Pending Modifiers'
+    )
 
     console.log(store)
     console.log(this)
@@ -165,6 +180,38 @@ export class Game extends Scene {
       if (currentTurn % 2 == 0) {
         this.updateModifiers(this, store)
         console.log('active: ', this.activeModifiers)
+
+        activeUI = showModifiers(
+          this.scene.get('UI'),
+          10,
+          20,
+          this.activeModifiers,
+          'Active Modifiers',
+          activeUI
+        )
+        pendingUI = showModifiers(
+          this.scene.get('UI'),
+          150,
+          20,
+          this.pendingModifiers,
+          'Pending Modifiers',
+          pendingUI
+        )
+        // EventBus.emit('updateModifiers', {
+        //   scene: this.scene.get('UI'),
+        //   x: 10,
+        //   y: 20,
+        //   modifiers: this.activeModifiers,
+        //   title: 'Active Modifiers'
+        // })
+
+        // EventBus.emit('updateModifiers', {
+        //   scene: this.scene.get('UI'),
+        //   x: 150,
+        //   y: 20,
+        //   modifiers: this.pendingModifiers,
+        //   title: 'Pending Modifiers'
+        // })
         playerTurnStart(this.army1)
       } else {
         if (this.army2.some((x) => x.active)) {
@@ -192,10 +239,14 @@ export class Game extends Scene {
     // generateGameUI(this)
 
     EventBus.emit('current-scene-ready', this)
+    this.events.on('destroy', () => {
+      EventBus.off('endTurn')
+    })
   }
 
   initModifiers(scene, store) {
     store.warData.invadingArmy.modifiers.forEach((modifier) => {
+      modifier.from = 'friend'
       if (modifier.turns > 0) {
         this.activeModifiers.push(modifier)
       } else {

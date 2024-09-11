@@ -80,27 +80,33 @@ export const createCard = (scene, x, y, cardData, callback) => {
     align: 'left'
   })
 
-  let priceText = scene.add.text(-38, height / 2 - 12, `${cardData.price}`, {
+  let priceText = scene.add.text(-37, height / 2 - 12, `${cardData.price}`, {
     fontFamily: 'PublicPixel',
     fontSize: '6px',
     align: 'left'
   })
 
-  let turnsText = scene.add.text(17, height / 2 - 12, `(${cardData.turns})`, {
-    fontFamily: 'PublicPixel',
-    fontSize: '6px',
-    align: 'left'
-  })
+  let turnsText = scene.add.text(
+    cardData.turns > 0 ? 17 : 12,
+    height / 2 - 12,
+    `(${cardData.turns})`,
+    {
+      fontFamily: 'PublicPixel',
+      fontSize: '6px',
+      align: 'right'
+    }
+  )
 
   sold.setAlpha(0)
 
   card.add([front, over, textObject, iconGraphic, priceText, turnsText, sold])
   card.setScale(1)
   card.postFX.addShine(1, 0.2, 5)
+  console.log(card)
 
   card.setSize(width, height)
   card.setInteractive().on('pointerdown', callback)
-  card.setScale(2)
+  card.setScale(1)
 
   return scene.add.existing(card)
 }

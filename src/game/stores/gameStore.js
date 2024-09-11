@@ -43,15 +43,15 @@ export const useGameStore = defineStore('game', {
     cards: [
       {
         key: 'cards',
-        frame: 0,
+        frame: 3,
         price: 500,
-        turns: -3,
+        turns: -2,
         back: 0,
-        icon: 2,
-        active: 3,
+        icon: 0,
         modifier: 'atkUp',
-        amount: 10,
-        text: 'ATK up'
+        amount: 20,
+        active: 4,
+        text: 'ATKup +20'
       }
     ]
   }),
