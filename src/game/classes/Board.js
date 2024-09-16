@@ -5,15 +5,10 @@ const earthTiles = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15]
 const earthTilesBase = [9, 11]
 const rockTiles = [12, 13, 14, 15, 16]
 const grassTiles = [23, 24, 25, 28, 29, 38, 39, 40]
-const grassTilesBase = [23, 24]
+const grassTilesBase = [23, 28]
 const stoneTiles = [61, 63, 68, 69]
 
-const tiles = [
-  earthTilesBase,
-  grassTilesBase,
-  stoneTiles,
-  rockTiles,
-]
+const tiles = [earthTilesBase, grassTilesBase, stoneTiles, rockTiles]
 
 export class Board extends RexPlugins.Board.Board {
   constructor(scene, config, isOverworld) {
@@ -36,8 +31,8 @@ export class Tile extends Phaser.GameObjects.Sprite {
     if (level === undefined) {
       level = Random(0, 1)
     }
-    let {x, y} = board.grid.getWorldXY(tileXY.x, tileXY.y)
-  
+    let { x, y } = board.grid.getWorldXY(tileXY.x, tileXY.y)
+
     if (isOverworld) {
       super(scene, x, y, 'overworldTiles', level + 11)
       this.scale = 1
@@ -47,7 +42,7 @@ export class Tile extends Phaser.GameObjects.Sprite {
       super(scene, x, y, 'battleTiles', tile)
       this.scale = 1
     }
-    
+
     board.addChess(this, tileXY.x, tileXY.y, 0)
     if (isOverworld) {
       // this.y = this.y + 3
@@ -55,7 +50,7 @@ export class Tile extends Phaser.GameObjects.Sprite {
 
     // Shape(board, tileX, tileY, tileZ, fillColor, fillAlpha, addToBoard)
     if (level) {
-    //   this.y = this.y - 2
+      //   this.y = this.y - 2
     }
     scene.add.existing(this)
     // this.setStrokeStyle(1, 0xffffff)

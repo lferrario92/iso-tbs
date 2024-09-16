@@ -71,6 +71,8 @@ export const createCard = (scene, x, y, cardData, callback) => {
   sold.name = 'sold'
   let over = scene.add.image(0, 0, 'cardOver', 0)
   over.name = 'over'
+  let frame = scene.add.image(0, 0, 'selectedCardFrame', 0)
+  frame.name = 'frame'
   let iconGraphic = scene.add.image(1, -29, 'cardIcons', cardData.icon)
   iconGraphic.name = 'iconGraphic'
 
@@ -97,11 +99,12 @@ export const createCard = (scene, x, y, cardData, callback) => {
     }
   )
 
+  frame.setAlpha(0)
   sold.setAlpha(0)
 
-  card.add([front, over, textObject, iconGraphic, priceText, turnsText, sold])
+  card.add([front, over, textObject, iconGraphic, priceText, turnsText, sold, frame])
   card.setScale(1)
-  card.postFX.addShine(1, 0.2, 5)
+  // card.postFX.addShine(1, 0.2, 5)
   console.log(card)
 
   card.setSize(width, height)

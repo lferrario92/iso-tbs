@@ -1,7 +1,7 @@
 import { EventBus } from '../EventBus'
 
 export const generateGameUI = (scene) => {
-  const scale = 4
+  const scale = 3
 
   const endTurnButton = scene.add
     .sprite(scene.scale.width - 8 * scale, scene.scale.height - 8 * scale, 'endTurnImage')
@@ -48,24 +48,25 @@ export const showModifiers = (scene, x, y, modifiers, title, renderedModifiers) 
     renderedModifiers.forEach((el) => el.destroy())
   }
 
-  scene.add.text(x, y - 10, title, {
+  let titleText = scene.add.text(x, y, title, {
     fontFamily: 'PublicPixel',
     fontSize: '8px',
     align: 'left'
   })
 
   let uimodifiers = modifiers.map((modifier) => {
-    let cont = new Phaser.GameObjects.Container(scene, x, pos, [])
-
     let width = 100
-    let height = 48
+    let height = 29
 
-    pos = pos + height + 5
+    pos = pos + height + 2
 
+    let cont = new Phaser.GameObjects.Container(scene, x + 20, pos, [])
+
+    let modifierBack = scene.add.image(36, 1, 'modifier_back')
     let iconGraphic = scene.add.image(0, 0, 'cardIcons', modifier.icon)
     iconGraphic.name = 'iconGraphic'
 
-    let textObject = scene.add.text(40, 0, modifier.text, {
+    let textObject = scene.add.text(15, -7, modifier.text, {
       fontFamily: 'PublicPixel',
       fontSize: '8px',
       align: 'left'
@@ -82,13 +83,14 @@ export const showModifiers = (scene, x, y, modifiers, title, renderedModifiers) 
       }
     )
 
-    cont.add([iconGraphic, textObject, turnsText])
+    cont.add([modifierBack, iconGraphic, textObject, turnsText])
     // card.postFX.addShine(1, 0.2, 5)
     console.log(cont)
     cont.setSize(width, height)
 
     return scene.add.existing(cont)
   })
+  uimodifiers.push(titleText)
 
   return uimodifiers
 

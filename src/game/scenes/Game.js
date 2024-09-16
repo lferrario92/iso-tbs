@@ -143,7 +143,7 @@ export class Game extends Scene {
     )
     let pendingUI = showModifiers(
       this.scene.get('UI'),
-      150,
+      170,
       20,
       this.pendingModifiers,
       'Pending Modifiers'
@@ -191,27 +191,12 @@ export class Game extends Scene {
         )
         pendingUI = showModifiers(
           this.scene.get('UI'),
-          150,
+          170,
           20,
           this.pendingModifiers,
           'Pending Modifiers',
           pendingUI
         )
-        // EventBus.emit('updateModifiers', {
-        //   scene: this.scene.get('UI'),
-        //   x: 10,
-        //   y: 20,
-        //   modifiers: this.activeModifiers,
-        //   title: 'Active Modifiers'
-        // })
-
-        // EventBus.emit('updateModifiers', {
-        //   scene: this.scene.get('UI'),
-        //   x: 150,
-        //   y: 20,
-        //   modifiers: this.pendingModifiers,
-        //   title: 'Pending Modifiers'
-        // })
         playerTurnStart(this.army1)
       } else {
         if (this.army2.some((x) => x.active)) {
@@ -235,8 +220,6 @@ export class Game extends Scene {
       }
     })
     this.goFullscreen()
-
-    // generateGameUI(this)
 
     EventBus.emit('current-scene-ready', this)
     this.events.on('destroy', () => {

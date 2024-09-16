@@ -21,7 +21,7 @@ const config = {
   height: '100%',
   max: {
     width: 1600,
-    height: 1200
+    height: 900
   },
   parent: 'game-container',
   pixelArt: true,

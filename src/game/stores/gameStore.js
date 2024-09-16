@@ -51,7 +51,7 @@ export const useGameStore = defineStore('game', {
         modifier: 'atkUp',
         amount: 20,
         active: 4,
-        text: 'ATKup +20'
+        text: 'ATK +20'
       }
     ]
   }),

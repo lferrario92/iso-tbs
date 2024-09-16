@@ -9,30 +9,41 @@ export class PreBattle extends Scene {
   preload() {}
 
   create() {
-    let cardExample = {
-      key: 'cards',
-      frame: 0,
-      price: 500,
-      turns: -3,
-      back: 0,
-      icon: 2,
-      modifier: 'crit',
-      amount: 10,
-      text: 'texto'
-    }
-
+    console.log('Prebattle, ', this)
     const store = useGameStore()
 
+    if (!store.cards.length) {
+      store.setInvadingModifiers([])
+
+      let gamescene = this.scene.switch('Game').launch('UI')
+      this.scene.stop('PreBattle')
+
+      gamescene.scene.events.once(
+        'destroy',
+        function () {
+          this.scene.add('Game', Game, true)
+        },
+        this
+      )
+    }
     this.playerCards = []
+    let panel = this.add.image(this.scale.width / 2, this.scale.height / 2 + 25, 'stonePanel')
+
+    this.midGroup = this.add.group()
+    this.topGroup = this.add.group()
+    this.midGroup.setDepth(1)
+    this.topGroup.setDepth(2)
 
     store.cards.forEach((card, index) => {
+      // en x tienen que ir desde 180 hasta 560 las cartas
       let theCard = createCard(this, 110 * (index + 1), 130, card, () => {
         if (theCard.getData('selected')) {
           theCard.getByName('front').clearFX()
           theCard.getByName('over').clearFX()
           theCard.getByName('iconGraphic').clearFX()
 
-          this.tweens.remove(theCard.tween)
+          // this.tweens.remove(theCard.tween)
+          theCard.getByName('frame').setAlpha(0)
           theCard.setScale(1)
           theCard.setData('selected', false)
         } else {
@@ -40,19 +51,39 @@ export class PreBattle extends Scene {
           theCard.getByName('over').preFX.addColorMatrix().brown()
           theCard.getByName('iconGraphic').preFX.addColorMatrix().brown()
 
+          theCard.getByName('frame').setAlpha(1)
           theCard.setData('selected', true)
+          theCard.setDepth(2)
 
-          theCard.tween = this.add.tween({
-            targets: theCard,
-            duration: 500,
-            repeat: -1,
-            scale: 1.2,
-            yoyo: true
-          })
+          // theCard.tween = this.add.tween({
+          //   targets: theCard,
+          //   duration: 500,
+          //   repeat: -1,
+          //   scale: 1.2,
+          //   yoyo: true
+          // })
         }
       })
+      this.topGroup.add(theCard)
       this.playerCards.push(theCard)
     })
+    Phaser.Actions.GridAlign(this.playerCards, {
+      width: 4,
+      height: 2,
+      cellWidth: 120,
+      cellHeight: 145,
+      x: 140,
+      y: 68
+    })
+
+    this.title = this.add.text(this.scale.width / 2, 20, `Select Modifiers`, {
+      fontFamily: 'PublicPixel',
+      fontSize: '22px',
+      align: 'right'
+    })
+    this.title.x = this.title.x - this.title.width / 2
+
+    this.midGroup.add(panel)
 
     this.exit = this.add
       .text(10, this.scale.height - 20, `exit`, {

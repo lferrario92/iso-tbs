@@ -9,7 +9,7 @@
     "modifier": "atkUp",
     "amount": 10,
     "active": 4,
-    "text": "ATKup +10"
+    "text": "ATK +10"
   },
   {
     "key": "cards",
@@ -21,18 +21,18 @@
     "modifier": "atkUp",
     "amount": 20,
     "active": 4,
-    "text": "ATKup +20"
+    "text": "ATK +20"
   },
   {
     "key": "cards",
-    "frame": 2,
+    "frame": 4,
     "price": 50,
-    "turns": -1,
+    "turns": -3,
     "back": 0,
-    "icon": 0,
-    "modifier": "atkUpDown",
+    "icon": 1,
+    "modifier": "heal",
     "amount": 20,
-    "active": 4,
-    "text": "ATK +20/-20"
+    "active": 1,
+    "text": "HEAL 20"
   }
 ]
