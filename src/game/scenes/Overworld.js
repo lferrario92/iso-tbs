@@ -32,6 +32,7 @@ export class Overworld extends Scene {
 
   create() {
     // const enemyStore = useEnemyStore()
+    this.scale.startFullscreen()
 
     const center = {
       x: this.scale.width / 2,

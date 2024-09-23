@@ -161,6 +161,9 @@ const currentScene = (scene) => {
 </template>
 
 <style media="screen" type="text/css">
+body {
+  background-color: wheat;
+}
 @font-face {
   font-family: PublicPixel;
   src: url('assets/PublicPixel-E447g.ttf');

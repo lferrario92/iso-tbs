@@ -105,7 +105,6 @@ export const createCard = (scene, x, y, cardData, callback) => {
   card.add([front, over, textObject, iconGraphic, priceText, turnsText, sold, frame])
   card.setScale(1)
   // card.postFX.addShine(1, 0.2, 5)
-  console.log(card)
 
   card.setSize(width, height)
   card.setInteractive().on('pointerdown', callback)

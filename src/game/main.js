@@ -15,13 +15,11 @@ import { PreBattle } from './scenes/PreBattle'
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
   type: Phaser.AUTO,
-  // width: 1024,
-  // height: 768,
-  width: '100%',
-  height: '100%',
+  width: 740,
+  height: 360,
   max: {
-    width: 1600,
-    height: 900
+    width: 740,
+    height: 360
   },
   parent: 'game-container',
   pixelArt: true,

@@ -1,6 +1,6 @@
-import { Scene } from 'phaser'
+import { LEFT, Scene } from 'phaser'
 import { Card } from '../classes/Card'
-import { createCard, Random } from '../helpers'
+import { createCard, delay, Random } from '../helpers'
 import { useGameStore } from '../stores/gameStore'
 import dataCards from '../data/cards.json'
 export class Merchant extends Scene {
@@ -16,14 +16,37 @@ export class Merchant extends Scene {
       x: this.scale.width / 2,
       y: this.scale.height / 2
     }
+    let back = this.add.image(280, 155, 'shopInterior')
 
-    console.log(store.money)
-    this.merchantDude = this.add.sprite(center.x, center.y, 'merchant', 0).setInteractive()
+    back.setScale(0.6)
+
+    this.merchantDude = this.add.sprite(140, 270, 'merchant', 0)
     this.merchantDude.setScale(5)
     this.merchantDude.play('merchantIdle')
+    // console.log('base, ', this.merchantDude)
+
+    // speech limits X: 10-200; Y: 0-150
+    let dialogBox = this.add.image(5, 5, 'stoneDialogBox')
+    dialogBox.setOrigin(0, 0)
+
+    this.storeSpeech = this.add.text(10, 10, '', {
+      fontFamily: 'PublicPixel',
+      fontSize: '11px',
+      align: 'left',
+      lineSpacing: 3,
+      stroke: 'black',
+      strokeThickness: 2,
+      // backgroundColor: 'black',
+      wordWrap: { width: 170 }
+    })
+
+    this.wordByWord(this, true)
+
+    this.marketGroup = this.add.group()
+    this.playerGroup = this.add.group()
 
     this.exit = this.add
-      .text(10, this.scale.height - 20, `exitexitexitexitexitexitexit`, {
+      .text(10, this.scale.height - 20, `Exit`, {
         fontFamily: 'PublicPixel',
         fontSize: '12px',
         align: 'left'
@@ -37,37 +60,98 @@ export class Merchant extends Scene {
 
     let marketCards = [...dataCards]
     this.playerCards = []
+    let panelCenter = this.scale.width - 252
+    let panel = this.add.image(panelCenter - 5, this.scale.height / 2 + 25, 'stonePanel')
 
     this.renderCurrentCards(this, store)
 
-    let marketTitle = this.add.text(10, 20, `Cards on sale`, {
+    // let marketTitle = this.add.text(10, 20, `Cards on sale`, {
+    //   fontFamily: 'PublicPixel',
+    //   fontSize: '12px',
+    //   align: 'left'
+    // })
+
+    // let sellingTitle = this.add.text(10, center.y, `Cards to sell`, {
+    //   fontFamily: 'PublicPixel',
+    //   fontSize: '12px',
+    //   align: 'left'
+    // })
+
+    this.yourCash = this.add.text(this.scale.width - 180, 26, `Money: ${store.money}`, {
       fontFamily: 'PublicPixel',
       fontSize: '12px',
       align: 'left'
     })
 
-    let sellingTitle = this.add.text(10, center.y, `Cards to sell`, {
+    let sellButtonText = this.add.text(0, 0, `Sell`, {
       fontFamily: 'PublicPixel',
-      fontSize: '12px',
-      align: 'left'
+      fontSize: '10px',
+      align: 'center'
+    })
+    sellButtonText.setOrigin()
+
+    let sellButtonSprite = this.add.image(0, 0, 'stoneTabActive')
+
+    let sellButton = this.add.container(350, 46, [sellButtonSprite, sellButtonText])
+    sellButton.setSize(56, 27)
+    sellButton.setInteractive()
+
+    let buyButtonText = this.add.text(0, 0, `Buy`, {
+      fontFamily: 'PublicPixel',
+      fontSize: '10px',
+      align: 'center'
+    })
+    buyButtonText.setOrigin()
+
+    let buyButtonSprite = this.add.image(0, 0, 'stoneTabActive')
+
+    let buyButton = this.add.container(280, 46, [buyButtonSprite, buyButtonText])
+    buyButton.setSize(56, 27)
+    // buyButton.setInteractive()
+
+    buyButton.on('pointerdown', () => {
+      if (this.wordTimeEvent) {
+        this.wordTimeEvent.destroy()
+      }
+      buyButton.removeInteractive()
+      sellButton.setInteractive()
+      this.marketGroup.setVisible(true)
+      this.playerGroup.setVisible(false)
+      sellButton.setAlpha(0.8)
+      buyButton.setAlpha(1)
+      this.wordByWord(this, true)
     })
 
-    this.yourCash = this.add.text(this.scale.width - 180, center.y, `Money: ${store.money}`, {
-      fontFamily: 'PublicPixel',
-      fontSize: '12px',
-      align: 'left'
+    sellButton.on('pointerdown', () => {
+      if (this.wordTimeEvent) {
+        this.wordTimeEvent.destroy()
+      }
+      sellButton.removeInteractive()
+      buyButton.setInteractive()
+      this.marketGroup.setVisible(false)
+      this.playerGroup.setVisible(true)
+      this.renderCurrentCards(this, store)
+      sellButton.setAlpha(1)
+      buyButton.setAlpha(0.8)
+      this.wordByWord(this, false)
     })
+
+    sellButton.setAlpha(0.8)
+    this.playerGroup.setVisible(false)
 
     marketCards.forEach((card, index) => {
       let theCard = createCard(this, 110 * (index + 1), 100, card, () => {
         let price = theCard.getData('price')
 
+        if (store.cards.length >= 8) {
+          console.log('limite de cartas')
+          return
+        }
+
         if (store.money >= price) {
           store.removeMoney(theCard.getData('price'))
-          console.log('current money ', store.money)
           theCard.getByName('sold').setAlpha(1)
 
-          console.log(theCard)
           this.yourCash.setText(`Money: ${store.money}`)
 
           theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
@@ -77,13 +161,20 @@ export class Merchant extends Scene {
           theCard.removeInteractive()
 
           store.addCard(theCard)
-          this.renderCurrentCards(this, store)
-
-          console.log('store', store)
         } else {
           console.log('no te alcanza')
         }
       })
+      this.marketGroup.add(theCard)
+    })
+
+    Phaser.Actions.GridAlign(this.marketGroup.children.entries, {
+      width: 4,
+      height: 2,
+      cellWidth: 120,
+      cellHeight: 145,
+      x: 260,
+      y: 70
     })
   }
 
@@ -97,7 +188,6 @@ export class Merchant extends Scene {
       let theCard = createCard(scene, 110 * (index + 1), 250, card, () => {
         store.sellCard(index)
         theCard.removeInteractive()
-        console.log(store.money)
 
         theCard.getByName('front').preFX.addColorMatrix().grayscale(1)
         theCard.getByName('over').preFX.addColorMatrix().grayscale(1)
@@ -118,6 +208,40 @@ export class Merchant extends Scene {
       })
 
       scene.playerCards.push(theCard)
+      scene.playerGroup.add(theCard)
+    })
+
+    Phaser.Actions.GridAlign(scene.playerGroup.children.entries, {
+      width: 4,
+      height: 2,
+      cellWidth: 120,
+      cellHeight: 145,
+      x: 260,
+      y: 70
+    })
+  }
+
+  wordByWord(scene, buying) {
+    let text = ''
+    if (buying) {
+      text =
+        'Look at this spells. . .   They will surely give you a priceless advantage on the battlefield. . . .'
+    } else {
+      text = "Well. . .   Let's see what you have."
+    }
+
+    let currentText = ''
+    scene.storeSpeech.setText(currentText)
+
+    scene.wordTimeEvent = scene.time.addEvent({
+      callback: () => {
+        currentText = currentText + ' ' + (text.split(' ')[currentText.split(' ').length - 1] || '')
+
+        // TODO: sound cling cling
+        scene.storeSpeech.setText(currentText)
+      },
+      delay: 250,
+      repeat: text.split(' ').length
     })
   }
 }
