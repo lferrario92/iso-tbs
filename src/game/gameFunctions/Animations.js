@@ -130,4 +130,13 @@ export const createOverworldAnimations = (scene) => {
     frameRate: 4,
     repeat: -1
   })
+
+  scene.anims.create({
+    key: 'settler',
+    frames: scene.anims.generateFrameNumbers('settler', {
+      frames: [0, 1]
+    }),
+    frameRate: 4,
+    repeat: -1
+  })
 }

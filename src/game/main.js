@@ -10,6 +10,7 @@ import { Overworld } from './scenes/Overworld'
 import { Merchant } from './scenes/Merchant'
 import { TiledEx } from './scenes/TestTiled'
 import { PreBattle } from './scenes/PreBattle'
+import { Snowing } from './scenes/Snowing'
 
 // Find out more information about the Game Config at:
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -34,7 +35,8 @@ const config = {
     Merchant,
     GameOver,
     TiledEx,
-    PreBattle
+    PreBattle,
+    Snowing
   ]
 }
 

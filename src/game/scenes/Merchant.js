@@ -159,6 +159,21 @@ export class Merchant extends Scene {
           theCard.clearFX()
 
           theCard.removeInteractive()
+          this.storeSpeech.setText('Plassure doing bussiness with you')
+
+          if (this.wordTimeEvent) {
+            this.wordTimeEvent.destroy()
+          }
+          if (this.operationTimeEvent) {
+            this.operationTimeEvent.destroy()
+          }
+          this.operationTimeEvent = this.time.addEvent({
+            callback: () => {
+              this.wordByWord(this, true)
+            },
+            delay: 2500,
+            repeat: 0
+          })
 
           store.addCard(theCard)
         } else {
@@ -205,6 +220,21 @@ export class Merchant extends Scene {
             theCard.destroy()
           })
         scene.yourCash.setText(`Money: ${store.money}`)
+
+        scene.storeSpeech.setText('Plassure doing bussiness with you')
+        if (scene.wordTimeEvent) {
+          scene.wordTimeEvent.destroy()
+        }
+        if (scene.operationTimeEvent) {
+          scene.operationTimeEvent.destroy()
+        }
+        scene.operationTimeEvent = scene.time.addEvent({
+          callback: () => {
+            scene.wordByWord(this, false)
+          },
+          delay: 2500,
+          repeat: 0
+        })
       })
 
       scene.playerCards.push(theCard)

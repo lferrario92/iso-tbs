@@ -134,14 +134,14 @@ export class Game extends Scene {
 
     this.initModifiers(this, store)
 
-    let activeUI = showModifiers(
+    this.activeUI = showModifiers(
       this.scene.get('UI'),
       10,
       20,
       this.activeModifiers,
       'Active Modifiers'
     )
-    let pendingUI = showModifiers(
+    this.pendingUI = showModifiers(
       this.scene.get('UI'),
       170,
       20,
@@ -181,22 +181,6 @@ export class Game extends Scene {
         this.updateModifiers(this, store)
         console.log('active: ', this.activeModifiers)
 
-        activeUI = showModifiers(
-          this.scene.get('UI'),
-          10,
-          20,
-          this.activeModifiers,
-          'Active Modifiers',
-          activeUI
-        )
-        pendingUI = showModifiers(
-          this.scene.get('UI'),
-          170,
-          20,
-          this.pendingModifiers,
-          'Pending Modifiers',
-          pendingUI
-        )
         playerTurnStart(this.army1)
       } else {
         if (this.army2.some((x) => x.active)) {
@@ -259,6 +243,24 @@ export class Game extends Scene {
         this.pendingModifiers.splice(index, 1)
       }
     })
+
+    this.activeUI = showModifiers(
+      this.scene.get('UI'),
+      10,
+      20,
+      this.activeModifiers,
+      'Active Modifiers',
+      this.activeUI
+    )
+
+    this.pendingUI = showModifiers(
+      this.scene.get('UI'),
+      170,
+      20,
+      this.pendingModifiers,
+      'Pending Modifiers',
+      this.pendingUI
+    )
   }
 
   update(time, delta) {
@@ -273,6 +275,7 @@ export class Game extends Scene {
 
   startCutscene() {
     this.scene.manager.scenes.find((x) => x.sys.config === 'BattleCutscene').restart()
+    this.scene.setVisible(false, 'UI')
     this.scene.switch('BattleCutscene')
   }
 

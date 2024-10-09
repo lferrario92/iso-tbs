@@ -3,8 +3,8 @@ import { OverworldActionMarker } from './Markers'
 import { OverworldChess } from './OverworldChess'
 
 export class OverworldFriend extends OverworldChess {
-  constructor(board, scene, x, y, animation, units, tileXY) {
-    super(board, scene, x, y, animation, tileXY)
+  constructor(board, scene, x, y, animation, units, key, tileXY) {
+    super(board, scene, x, y, animation, key, tileXY)
 
     this.units = units
     this.on(

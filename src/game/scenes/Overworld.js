@@ -64,12 +64,19 @@ export class Overworld extends Scene {
 
     this.test.setDepth(this.test.y)
 
-    // this.test2 = this.add.sprite(0, 0, 'castle')
-    // this.board.addChess(this.test2, 1, 4, 1)
-    // this.test2.y = this.test2.y - 3
-    // this.test2.setScale(0.8)
+    this.test2 = this.add.sprite(0, 0, 'entitest', 20).setScale(0.6)
+    this.board.addChess(this.test2, 1, 3, 1)
 
-    // this.test2.setDepth(this.test2.y)
+    this.anims.create({
+      key: 'windmill',
+      frames: this.anims.generateFrameNumbers('entitest', {
+        frames: [20, 21, 22, 23]
+      }),
+      frameRate: 3,
+      repeat: -1
+    })
+
+    this.test2.play('windmill')
 
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
@@ -98,6 +105,8 @@ export class Overworld extends Scene {
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
 
+    this.player4 = new OverworldFriend(this.board, this, 0, 0, 'settler', [SoldierC], 'settler')
+
     this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [SoldierC])
     this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2', [
       SoldierC,
@@ -110,8 +119,28 @@ export class Overworld extends Scene {
       OrcEnemy
     ])
 
-    this.actors = [this.player, this.player2, this.player3, this.castle, this.castle2, this.test]
+    this.actors = [
+      this.player,
+      this.player2,
+      this.player3,
+      this.player4,
+      this.castle,
+      this.castle2,
+      this.test
+    ]
 
+    const test = this.add.sprite(center.x, center.y - 25, 'endTurnImage').setInteractive()
+
+    test.on('pointerdown', () => {
+      this.scene.launch('Snowing')
+      this.time.addEvent({
+        callback: () => {
+          this.board.nextSeason()
+        },
+        delay: 1500,
+        repeat: 0
+      })
+    })
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0
     // this.cameras.main.scrollX = 140

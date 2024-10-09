@@ -152,6 +152,7 @@ export class BattleCutscene extends Scene {
     this.timeout = setTimeout(() => {
       store.cutSceneResolve()
       this.scene.switch('Game')
+      this.scene.setVisible(true, 'UI')
     }, time || 1500)
   }
 
