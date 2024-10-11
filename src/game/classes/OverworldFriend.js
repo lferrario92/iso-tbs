@@ -1,4 +1,6 @@
 import { EventBus } from '../EventBus'
+import { useGameStore } from '../stores/gameStore'
+import { BuildingFriend } from './BuildingFriend'
 import { OverworldActionMarker } from './Markers'
 import { OverworldChess } from './OverworldChess'
 
@@ -6,7 +8,24 @@ export class OverworldFriend extends OverworldChess {
   constructor(board, scene, x, y, animation, units, key, tileXY) {
     super(board, scene, x, y, animation, key, tileXY)
 
+    const store = useGameStore()
     this.units = units
+
+    this.UI = new Phaser.GameObjects.Container(scene, 0, 0)
+
+    this.moveButton = scene.add.sprite(15, -4, 'over_move_button')
+    this.moveButton.setInteractive()
+    this.actionButton = scene.add.sprite(-15, -4, 'over_attack_button')
+    this.actionButton.setInteractive()
+    this.moveButton.setInteractive()
+    this.closeUIButton = scene.add.sprite(0, -19, 'over_wait_button')
+    this.closeUIButton.setInteractive()
+    this.buildUIButton = scene.add.sprite(0, 11, 'over_build_button')
+    this.buildUIButton.setInteractive()
+    this.UI.add([this.moveButton, this.actionButton, this.closeUIButton, this.buildUIButton])
+
+    this.add(this.UI)
+    this.UI.setVisible(false)
     this.on(
       'board.pointerdown',
       function () {
@@ -14,6 +33,71 @@ export class OverworldFriend extends OverworldChess {
       },
       this
     )
+    this.moveButton.on(
+      'pointerdown',
+      function () {
+        if (!this.hasMoved && !this.hasActed) {
+          store.removeUnitUI(this)
+          this.showMoveableArea()
+        }
+      },
+      this
+    )
+    this.actionButton.on(
+      'pointerdown',
+      function () {
+        if (!this.hasActed) {
+          store.removeUnitUI(this)
+          this.showPossibleActions()
+        }
+      },
+      this
+    )
+    this.closeUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+      },
+      this
+    )
+
+    this.buildUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        this.build()
+      },
+      this
+    )
+  }
+
+  afterMove() {
+    this.hasMoved = true
+    this.moveButton.setVisible(false)
+    this.UI.setVisible(true)
+  }
+
+  build() {
+    let building = new BuildingFriend(
+      this.rexChess.board,
+      this.scene,
+      0,
+      0,
+      'castle',
+      () => {
+        alert('asereje')
+      },
+      0,
+      this.rexChess.tileXYZ
+    )
+
+    this.destroy()
+  }
+
+  resetMoveFlag() {
+    this.moveButton.setVisible(true)
+    this.hasMoved = false
+    return this
   }
 
   showPossibleActions() {
@@ -48,13 +132,13 @@ export class OverworldFriend extends OverworldChess {
     this.selector.setAlpha(1)
     EventBus.emit('selectUnit', this)
     EventBus.emit('clearUI', this)
-    // this.setFillStyle(0x2541b2, 1)
-    if (!this.hasMoved && !this.hasActed) {
-      this.showMoveableArea()
-    }
-    if (!this.hasActed) {
-      this.showPossibleActions()
-    }
+    this.UI.setVisible(true)
+    // if (!this.hasMoved && !this.hasActed) {
+    //   this.showMoveableArea()
+    // }
+    // if (!this.hasActed) {
+    //   this.showPossibleActions()
+    // }
     return this
   }
 }

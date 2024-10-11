@@ -41,6 +41,13 @@ export class Preloader extends Scene {
     this.load.image('primaryAttackImage', 'ingame_ui/icons/attack_boost.png')
     this.load.image('secondaryAttackImage', 'ingame_ui/icons/critical_boost.png')
 
+    // OVERWORLD BUTTONS
+
+    this.load.image('over_attack_button', 'ingame_ui/overworld_buttons/attack_button.png')
+    this.load.image('over_move_button', 'ingame_ui/overworld_buttons/move_button.png')
+    this.load.image('over_build_button', 'ingame_ui/overworld_buttons/build_button.png')
+    this.load.image('over_wait_button', 'ingame_ui/overworld_buttons/wait_button.png')
+
     // ENTITIES
 
     this.load.image('castle', 'entities/castletest2.png')

@@ -66,6 +66,7 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
+      unit.UI && unit.UI.setVisible(false)
     },
     sellCard(index) {
       this.addMoney(this.cards[index].price)
@@ -117,6 +118,12 @@ export const useGameStore = defineStore('game', {
           x.destroy()
         }
       })
+    },
+    removeUnitUI(chess) {
+      chess.UI?.setVisible(false)
+    },
+    showUnitUI(chess) {
+      chess.UI?.setVisible(true)
     },
     setWarData(data) {
       this.warData = {

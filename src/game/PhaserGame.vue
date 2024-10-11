@@ -73,6 +73,7 @@ EventBus.on('removeAllActionMarker', (chess) => {
 EventBus.on('clearUI', (chess) => {
   store.removeAllMobableMarker(chess)
   store.removeAllActionMarker(chess)
+  store.removeUnitUI(chess)
 })
 
 defineExpose({ scene, game })

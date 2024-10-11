@@ -113,7 +113,10 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     if (path.length === 0) {
       this.showMoveableArea()
       EventBus.emit('clearUI', this)
-      this.resetMoveFlag()
+      // this.resetMoveFlag()
+      if (this.afterMove) {
+        this.afterMove()
+      }
 
       if (andAct) {
         this.checkPossibleAction()
