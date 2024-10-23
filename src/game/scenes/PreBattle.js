@@ -95,10 +95,10 @@ export class PreBattle extends Scene {
 
     this.exit.on('pointerdown', () => {
       this.scene.stop('PreBattle')
-      this.scene.switch('Overworld')
+      this.scene.switch('Overworld').launch('OverworldUI')
     })
 
-    this.play = this.add
+    this.playButton = this.add
       .text(this.scale.width - 100, this.scale.height - 20, `play`, {
         fontFamily: 'PublicPixel',
         fontSize: '12px',
@@ -106,7 +106,7 @@ export class PreBattle extends Scene {
       })
       .setInteractive()
 
-    this.play.on('pointerdown', () => {
+    this.playButton.on('pointerdown', () => {
       let cardsToApply = this.playerCards
         .filter((card) => card.getData('selected'))
         .map((card) => card.getData('raw'))

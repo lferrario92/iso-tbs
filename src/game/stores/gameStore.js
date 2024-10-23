@@ -29,12 +29,15 @@ export const useGameStore = defineStore('game', {
     },
     warData: {
       invadingArmy: {
-        units: [SoldierC, SoldierC],
+        units: [
+          { constructor: SoldierC, type: 'Soldier' },
+          { constructor: SoldierC, type: 'Soldier' }
+        ],
         modifiers: null,
         overWorldChess: null
       },
       targetArmy: {
-        units: [OrcEnemy],
+        units: [{ constructor: OrcEnemy, type: 'Orc' }],
         modifiers: null,
         overWorldChess: null
       }
@@ -66,7 +69,9 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
-      unit.UI && unit.UI.setVisible(false)
+      if (unit.UI) {
+        unit.UI.setVisible(false)
+      }
     },
     sellCard(index) {
       this.addMoney(this.cards[index].price)

@@ -48,6 +48,9 @@ export class OverworldChess extends Phaser.GameObjects.Container {
         preTile = board.tileXYZToChess(preTile.x, preTile.y, 0)
         var curLevel = curTile.getData('level')
         var preLevel = preTile.getData('level')
+        if (curTile.getData('level') == -1) {
+          return 999
+        }
         return preLevel >= curLevel ? 1 : 2
       },
       cacheCost: false

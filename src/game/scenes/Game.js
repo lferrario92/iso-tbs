@@ -114,24 +114,6 @@ export class Game extends Scene {
     this.activeModifiers = []
     this.pendingModifiers = []
 
-    // this.activeModifiersText = this.add.text(25, 25, `active modifiers`, {
-    //   fontFamily: 'PublicPixel',
-    //   fontSize: '12px',
-    //   align: 'left'
-    // })
-
-    // {
-    //   key: 'cards',
-    //   frame: 0,
-    //   price: 500,
-    //   turns: -3,
-    //   back: 0,
-    //   icon: 2,
-    //   modifier: 'crit',
-    //   amount: 10,
-    //   text: 'texto'
-    // }
-
     this.initModifiers(this, store)
 
     this.activeUI = showModifiers(
@@ -165,10 +147,10 @@ export class Game extends Scene {
     this.army2 = []
 
     this.army1 = store.warData.invadingArmy.units.map(
-      (unit) => new unit(board, this, 0, 0, placingCoords.invading)
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading)
     )
     this.army2 = store.warData.targetArmy.units.map(
-      (unit) => new unit(board, this, 0, 0, placingCoords.target)
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target)
     )
 
     this.midGroup.setDepth(1)
@@ -196,8 +178,10 @@ export class Game extends Scene {
           store.warData.targetArmy.overWorldChess.destroy()
           EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
 
-          this.scene.switch('Overworld')
-          console.log('game stop')
+          this.scene.switch('Overworld').launch('OverworldUI')
+          this.scene.stop('UI')
+          this.scene.start('OverworldUI')
+
           EventBus.removeListener('endTurn')
           this.scene.stop('Game')
         }

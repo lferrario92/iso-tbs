@@ -8,7 +8,7 @@ export class Snowing extends Scene {
   create() {
     this.add
       .particles(this.scale.width / 2, this.scale.height / 2, 'snow', {
-        x: { min: this.scale.width / 4, max: this.scale.width - this.scale.width / 6 },
+        x: { min: 0, max: this.scale.width },
         y: -10,
         scale: { min: 1, max: 1.3 },
         maxAliveParticles: 300,
@@ -21,7 +21,7 @@ export class Snowing extends Scene {
 
     this.add
       .particles(this.scale.width / 2, this.scale.height / 2, 'snow', {
-        x: { min: this.scale.width / 4, max: this.scale.width - this.scale.width / 6 },
+        x: { min: 0, max: this.scale.width },
         y: -10,
         scale: { min: 1.5, max: 2.3 },
         maxAliveParticles: 300,

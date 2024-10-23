@@ -11,6 +11,9 @@ import { OverworldFoe } from '../classes/OverworldFoe.js'
 import { SoldierC } from '../classes/Soldier.js'
 import { OrcEnemy } from '../classes/Enemies.js'
 import { BuildingFriend } from '../classes/BuildingFriend.js'
+import { EventBus } from '../EventBus.js'
+import { playerOverworldTurnStart } from '../gameFunctions/PlayerTurnStart.js'
+import { enemyOverworldTurnStart } from '../gameFunctions/EnemyTurnStart.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -32,7 +35,9 @@ export class Overworld extends Scene {
 
   create() {
     // const enemyStore = useEnemyStore()
+    this.scene.launch('OverworldUI')
     this.scale.startFullscreen()
+    this.currentTurn = 0
 
     const center = {
       x: this.scale.width / 2,
@@ -49,7 +54,7 @@ export class Overworld extends Scene {
           cellHeight: 8,
           type: 1
         }),
-        width: 5,
+        width: 10,
         height: 5
       },
       true
@@ -81,7 +86,7 @@ export class Overworld extends Scene {
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
     this.castle = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
-      this.scene.switch('Merchant')
+      this.changeScene('Merchant')
     })
     this.castle2 = new BuildingFriend(
       this.board,
@@ -90,7 +95,7 @@ export class Overworld extends Scene {
       0,
       'overworldTiles',
       () => {
-        this.scene.switch('PreBattle')
+        this.changeScene('PreBattle')
       },
       44
     )
@@ -105,18 +110,31 @@ export class Overworld extends Scene {
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
 
-    this.player4 = new OverworldFriend(this.board, this, 0, 0, 'settler', [SoldierC], 'settler')
+    this.playerArmy = []
+    this.enemyArmies = []
 
-    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [SoldierC])
+    this.player4 = new OverworldFriend(
+      this.board,
+      this,
+      0,
+      0,
+      'settler',
+      [{ constructor: SoldierC, type: 'Soldier' }],
+      'settler'
+    )
+
+    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [
+      { constructor: SoldierC, type: 'Soldier' }
+    ])
     this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2', [
-      SoldierC,
-      SoldierC,
-      SoldierC
+      { constructor: SoldierC, type: 'Soldier' },
+      { constructor: SoldierC, type: 'Soldier' },
+      { constructor: SoldierC, type: 'Soldier' }
     ])
     this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle', [
-      OrcEnemy,
-      OrcEnemy,
-      OrcEnemy
+      { constructor: OrcEnemy, type: 'Orc' },
+      { constructor: OrcEnemy, type: 'Orc' },
+      { constructor: OrcEnemy, type: 'Orc' }
     ])
 
     this.actors = [
@@ -129,17 +147,36 @@ export class Overworld extends Scene {
       this.test
     ]
 
-    const test = this.add.sprite(center.x, center.y - 25, 'endTurnImage').setInteractive()
+    EventBus.on('endTurnOverworld', () => {
+      this.currentTurn++
+      this.playerArmy.splice(0)
+      this.enemyArmies.splice(0)
 
-    test.on('pointerdown', () => {
-      this.scene.launch('Snowing')
-      this.time.addEvent({
-        callback: () => {
-          this.board.nextSeason()
-        },
-        delay: 1500,
-        repeat: 0
+      this.actors.forEach((actor) => {
+        if (actor instanceof OverworldFriend) {
+          this.playerArmy.push(actor)
+        } else if (actor instanceof OverworldFoe) {
+          this.enemyArmies.push(actor)
+        }
       })
+
+      if (this.currentTurn % 10 == 0) {
+        this.snowing()
+      }
+
+      if (this.currentTurn % 2 == 0) {
+        playerOverworldTurnStart(this.playerArmy)
+      } else {
+        enemyOverworldTurnStart(this.enemyArmies)
+      }
+    })
+
+    EventBus.on('createSoldier', () => {
+      this.actors.push(
+        new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [
+          { constructor: SoldierC, type: 'Soldier' }
+        ])
+      )
     })
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0
@@ -149,6 +186,22 @@ export class Overworld extends Scene {
   update() {
     this.actors.forEach((actor) => {
       actor.setDepth(actor.y)
+    })
+  }
+
+  changeScene(name) {
+    this.scene.stop('OverworldUI')
+    this.scene.switch(name)
+  }
+
+  snowing() {
+    this.scene.launch('Snowing')
+    this.time.addEvent({
+      callback: () => {
+        this.board.nextSeason()
+      },
+      delay: 1500,
+      repeat: 0
     })
   }
 }

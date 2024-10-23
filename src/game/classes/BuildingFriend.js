@@ -1,10 +1,12 @@
 import { EventBus } from '../EventBus'
 import { Building } from './Building'
-import { OverworldActionMarker } from './Markers'
+import { MoveableMarker, OverworldActionMarker } from './Markers'
 
 export class BuildingFriend extends Building {
   constructor(board, scene, x, y, sprite, callback, frame, tileXY) {
     super(board, scene, x, y, sprite, frame, tileXY)
+
+    this._borders = []
 
     this.on(
       'board.pointerdown',
@@ -38,6 +40,40 @@ export class BuildingFriend extends Building {
       )
     })
     return tileXYArray
+  }
+
+  testCallback() {
+    // let tiles = this.rexChess.board.ringToChessArray(this.rexChess.tileXYZ, 2, 0)
+    let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 2, 0)
+    this.showBorders(tiles)
+  }
+
+  showBorders(tiles) {
+    this.hideBorders()
+    tiles.forEach((tile, index) => {
+      this._borders
+        .push
+        // new MoveableMarker(this, tile, this.scene.midGroup, 'overworldIndicators', 1, 1)
+        ()
+      this.scene.add.tween({
+        targets: tile,
+        delay: (index + 1) * 50,
+        duration: 300,
+        repeat: 0,
+        ease: 'back.in',
+        y: tile.y - 2,
+        yoyo: true
+      })
+    })
+    return this
+  }
+
+  hideBorders() {
+    for (var i = 0, cnt = this._borders.length; i < cnt; i++) {
+      this._borders[i].destroy()
+    }
+    this._borders.length = 0
+    return this
   }
 
   select() {

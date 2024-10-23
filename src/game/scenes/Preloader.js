@@ -72,6 +72,8 @@ export class Preloader extends Scene {
     this.load.image('stoneTabActive', 'stone/stone_tab_active.png')
     this.load.image('stoneDialogBox', 'stone/stone_dialog_box.png')
 
+    this.load.image('stoneSidePanel', 'stone/stone_side_panel.png')
+
     // this.load.tilemapTiledJSON('map', 'test.json')
     this.load.tilemapCSV('map', 'test.csv')
 

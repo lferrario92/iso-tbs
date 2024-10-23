@@ -26,6 +26,7 @@ export class OverworldFriend extends OverworldChess {
 
     this.add(this.UI)
     this.UI.setVisible(false)
+    this.UI.setDepth(999)
     this.on(
       'board.pointerdown',
       function () {
@@ -57,6 +58,7 @@ export class OverworldFriend extends OverworldChess {
       'pointerdown',
       function () {
         store.removeUnitUI(this)
+        this.hasActed = true
       },
       this
     )
@@ -85,7 +87,7 @@ export class OverworldFriend extends OverworldChess {
       0,
       'castle',
       () => {
-        alert('asereje')
+        building.testCallback()
       },
       0,
       this.rexChess.tileXYZ
@@ -126,13 +128,23 @@ export class OverworldFriend extends OverworldChess {
   }
 
   select() {
-    if (this.hasActed) {
-      return
-    }
     this.selector.setAlpha(1)
     EventBus.emit('selectUnit', this)
     EventBus.emit('clearUI', this)
+    if (this.hasActed) {
+      return
+    }
+    this.UI.setAlpha(0)
+    this.UI.setScale(0.5)
+
     this.UI.setVisible(true)
+    this.scene.add.tween({
+      targets: this.UI,
+      duration: 100,
+      scale: 1,
+      alpha: 1,
+      repeat: 0
+    })
     // if (!this.hasMoved && !this.hasActed) {
     //   this.showMoveableArea()
     // }

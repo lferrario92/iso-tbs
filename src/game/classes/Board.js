@@ -63,6 +63,12 @@ export class Board extends RexPlugins.Board.Board {
   getTiles() {
     return this.getAllChess().filter((x) => x instanceof Tile)
   }
+
+  testExpand() {
+    this.getTiles()
+      .filter((x) => x.rexChess.tileXYZ.x > 4)
+      .forEach((x) => x.setVisible(false))
+  }
 }
 
 export class Tile extends Phaser.GameObjects.Sprite {

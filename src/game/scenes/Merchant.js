@@ -55,7 +55,7 @@ export class Merchant extends Scene {
 
     this.exit.on('pointerdown', () => {
       this.scene.stop('Merchant')
-      this.scene.switch('Overworld')
+      this.scene.switch('Overworld').launch('OverworldUI')
     })
 
     let marketCards = [...dataCards]

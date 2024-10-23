@@ -163,6 +163,7 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
         store.setWarData(actionData)
 
         // chess.scene.scene.launch('Game')
+        chess.scene.scene.stop('OverworldUI')
 
         chess.scene.scene.switch('PreBattle')
       },
