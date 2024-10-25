@@ -1,10 +1,12 @@
-import { EventBus } from '../EventBus'
-import { killChessAt } from '../helpers.js'
-import { MoveableMarker } from './Markers.js'
+import { EventBus } from '../../EventBus'
+import { killChessAt } from '../../helpers.js'
+import { MoveableMarker } from '../Markers.js'
 
 export class Building extends Phaser.GameObjects.Container {
   constructor(board, scene, x, y, sprite, frame, tileXY) {
     super(scene, x, y, [])
+
+    this.type = 'Building'
 
     this.selector = scene.add.image(0, 0, 'overworldIndicators', 5)
     this.sprite = scene.add.sprite(0, -4, sprite, frame || 0)

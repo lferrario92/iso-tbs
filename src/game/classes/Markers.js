@@ -97,7 +97,7 @@ export class ActionMarker extends Phaser.GameObjects.Sprite {
 }
 
 export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
-  constructor(chess, tileXY, group, key, frame, scale) {
+  constructor(chess, tileXY, group, key, frame, scale, customCallback) {
     var board = chess.rexChess.board
     var scene = board.scene
 
@@ -126,46 +126,49 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
       'board.pointerdown',
       function () {
         const store = useGameStore()
+        if (customCallback) {
+          customCallback()
+        } else {
+          let tile = this.rexChess.board.tileXYZToChess(
+            this.rexChess.tileXYZ.x,
+            this.rexChess.tileXYZ.y,
+            0
+          )
+          let target = this.rexChess.board.tileXYZToChess(
+            this.rexChess.tileXYZ.x,
+            this.rexChess.tileXYZ.y,
+            1
+          )
+          let invader = store.selectedUnit
 
-        let tile = this.rexChess.board.tileXYZToChess(
-          this.rexChess.tileXYZ.x,
-          this.rexChess.tileXYZ.y,
-          0
-        )
-        let target = this.rexChess.board.tileXYZToChess(
-          this.rexChess.tileXYZ.x,
-          this.rexChess.tileXYZ.y,
-          1
-        )
-        let invader = store.selectedUnit
+          const level = this.rexChess.board
+            .tileXYZToChess(this.rexChess.tileXYZ.x, this.rexChess.tileXYZ.y, 0)
+            .data.get('level')
 
-        const level = this.rexChess.board
-          .tileXYZToChess(this.rexChess.tileXYZ.x, this.rexChess.tileXYZ.y, 0)
-          .data.get('level')
-
-        let actionData = {
-          level,
-          attackingFrom: this.rexChess.board.directionBetween(invader, target),
-          invadingArmy: {
-            units: invader.units || [SoldierC],
-            modifiers: null,
-            overWorldChess: invader
-          },
-          targetArmy: {
-            units: target.units || [OrcEnemy],
-            modifiers: null,
-            overWorldChess: target
+          let actionData = {
+            level,
+            attackingFrom: this.rexChess.board.directionBetween(invader, target),
+            invadingArmy: {
+              units: invader.units || [SoldierC],
+              modifiers: null,
+              overWorldChess: invader
+            },
+            targetArmy: {
+              units: target.units || [OrcEnemy],
+              modifiers: null,
+              overWorldChess: target
+            }
           }
+
+          console.log(actionData.attackingFrom)
+
+          store.setWarData(actionData)
+
+          // chess.scene.scene.launch('Game')
+          chess.scene.scene.stop('OverworldUI')
+
+          chess.scene.scene.switch('PreBattle')
         }
-
-        console.log(actionData.attackingFrom)
-
-        store.setWarData(actionData)
-
-        // chess.scene.scene.launch('Game')
-        chess.scene.scene.stop('OverworldUI')
-
-        chess.scene.scene.switch('PreBattle')
       },
       this
     )

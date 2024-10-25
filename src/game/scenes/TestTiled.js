@@ -4,13 +4,13 @@ import { Board } from '../classes/Board.js'
 import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin'
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
-import { OverworldChess } from '../classes/OverworldChess.js'
+import { OverworldChess } from '../classes/OverworldUnits/OverworldChess.js'
 import { createOverworldAnimations } from '../gameFunctions/Animations.js'
-import { OverworldFriend } from '../classes/OverworldFriend.js'
-import { OverworldFoe } from '../classes/OverworldFoe.js'
+import { OverworldFriend } from '../classes/OverworldUnits/OverworldFriend.js'
+import { OverworldFoe } from '../classes/OverworldUnits/OverworldFoe.js'
 import { SoldierC } from '../classes/Soldier.js'
 import { OrcEnemy } from '../classes/Enemies.js'
-import { BuildingFriend } from '../classes/BuildingFriend.js'
+import { BuildingFriend } from '../classes/OverworldUnits/BuildingFriend.js'
 
 export class TiledEx extends Scene {
   constructor() {

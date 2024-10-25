@@ -1,5 +1,5 @@
-import { EventBus } from '../EventBus'
-import { OverworldActionMarker } from './Markers'
+import { EventBus } from '../../EventBus'
+import { OverworldActionMarker } from '../Markers'
 import { OverworldChess } from './OverworldChess'
 
 export class OverworldFoe extends OverworldChess {

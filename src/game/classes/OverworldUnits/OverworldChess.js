@@ -1,6 +1,6 @@
-import { EventBus } from '../EventBus'
-import { killChessAt } from '../helpers.js'
-import { MoveableMarker } from './Markers.js'
+import { EventBus } from '../../EventBus'
+import { killChessAt } from '../../helpers.js'
+import { MoveableMarker } from '../Markers.js'
 
 export class OverworldChess extends Phaser.GameObjects.Container {
   constructor(board, scene, x, y, animation, key, tileXY) {
@@ -97,6 +97,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
   }
 
   moveToTile(endTile) {
+    this.scene.input.disable(this.scene)
     if (this.moveTo.isRunning) {
       return false
     }

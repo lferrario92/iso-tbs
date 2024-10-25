@@ -1,12 +1,13 @@
-import { EventBus } from '../EventBus'
+import { EventBus } from '../../EventBus'
 import { Building } from './Building'
-import { MoveableMarker, OverworldActionMarker } from './Markers'
+import { MoveableMarker, OverworldActionMarker } from '../Markers'
 
 export class BuildingFriend extends Building {
-  constructor(board, scene, x, y, sprite, callback, frame, tileXY) {
+  constructor(board, scene, x, y, sprite, callback, frame, tileXY, name) {
     super(board, scene, x, y, sprite, frame, tileXY)
 
     this._borders = []
+    this.name = name
 
     this.on(
       'board.pointerdown',
@@ -46,6 +47,8 @@ export class BuildingFriend extends Building {
     // let tiles = this.rexChess.board.ringToChessArray(this.rexChess.tileXYZ, 2, 0)
     let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 2, 0)
     this.showBorders(tiles)
+
+    EventBus.emit('selectUnit', this)
   }
 
   showBorders(tiles) {

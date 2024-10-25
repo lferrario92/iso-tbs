@@ -4,16 +4,18 @@ import { Board } from '../classes/Board.js'
 import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin'
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
-import { OverworldChess } from '../classes/OverworldChess.js'
+import { OverworldChess } from '../classes/OverworldUnits/OverworldChess.js'
 import { createOverworldAnimations } from '../gameFunctions/Animations.js'
-import { OverworldFriend } from '../classes/OverworldFriend.js'
-import { OverworldFoe } from '../classes/OverworldFoe.js'
+import { OverworldFriend } from '../classes/OverworldUnits/OverworldFriend.js'
+import { OverworldFoe } from '../classes/OverworldUnits/OverworldFoe.js'
 import { SoldierC } from '../classes/Soldier.js'
 import { OrcEnemy } from '../classes/Enemies.js'
-import { BuildingFriend } from '../classes/BuildingFriend.js'
+import { BuildingFriend } from '../classes/OverworldUnits/BuildingFriend.js'
 import { EventBus } from '../EventBus.js'
 import { playerOverworldTurnStart } from '../gameFunctions/PlayerTurnStart.js'
 import { enemyOverworldTurnStart } from '../gameFunctions/EnemyTurnStart.js'
+import { useGameStore } from '../stores/gameStore.js'
+import { Settler } from '../classes/OverworldUnits/Settler.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -35,6 +37,7 @@ export class Overworld extends Scene {
 
   create() {
     // const enemyStore = useEnemyStore()
+    const store = useGameStore()
     this.scene.launch('OverworldUI')
     this.scale.startFullscreen()
     this.currentTurn = 0
@@ -62,6 +65,8 @@ export class Overworld extends Scene {
 
     camera(this)
     buildDrag(this)
+    this.cameras.main.setZoom(0)
+    this.cameras.main.zoomTo(5, 1500, 'Cubic')
 
     this.test = this.add.sprite(0, 0, 'overworldTiles', 43)
     this.board.addChess(this.test, 1, 1, 1)
@@ -104,8 +109,6 @@ export class Overworld extends Scene {
 
     createOverworldAnimations(this)
 
-    this.cameras.main.setZoom(5)
-
     this.topGroup.add(this.test)
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
@@ -113,29 +116,54 @@ export class Overworld extends Scene {
     this.playerArmy = []
     this.enemyArmies = []
 
-    this.player4 = new OverworldFriend(
+    this.player4 = new Settler(
       this.board,
       this,
       0,
       0,
       'settler',
       [{ constructor: SoldierC, type: 'Soldier' }],
+      'Settler',
       'settler'
     )
 
-    this.player = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [
-      { constructor: SoldierC, type: 'Soldier' }
-    ])
-    this.player2 = new OverworldFriend(this.board, this, 0, 0, 'overworldIdle2', [
-      { constructor: SoldierC, type: 'Soldier' },
-      { constructor: SoldierC, type: 'Soldier' },
-      { constructor: SoldierC, type: 'Soldier' }
-    ])
-    this.player3 = new OverworldFoe(this.board, this, 0, 0, 'overworldOrcIdle', [
-      { constructor: OrcEnemy, type: 'Orc' },
-      { constructor: OrcEnemy, type: 'Orc' },
-      { constructor: OrcEnemy, type: 'Orc' }
-    ])
+    this.player = new OverworldFriend(
+      this.board,
+      this,
+      0,
+      0,
+      'overworldIdle1',
+      [{ constructor: SoldierC, type: 'Soldier' }],
+      'Army'
+    )
+    this.player2 = new OverworldFriend(
+      this.board,
+      this,
+      0,
+      0,
+      'overworldIdle2',
+      [
+        { constructor: SoldierC, type: 'Soldier' },
+        { constructor: SoldierC, type: 'Soldier' },
+        { constructor: SoldierC, type: 'Soldier' }
+      ],
+      'Farmer'
+    )
+    this.player3 = new OverworldFoe(
+      this.board,
+      this,
+      0,
+      0,
+      'overworldOrcIdle',
+      [
+        { constructor: OrcEnemy, type: 'Orc' },
+        { constructor: OrcEnemy, type: 'Orc' },
+        { constructor: OrcEnemy, type: 'Orc' }
+      ],
+      'Orc'
+    )
+
+    this.createUnitUI(this, store)
 
     this.actors = [
       this.player,
@@ -148,6 +176,7 @@ export class Overworld extends Scene {
     ]
 
     EventBus.on('endTurnOverworld', () => {
+      store.removeUnitUI(this)
       this.currentTurn++
       this.playerArmy.splice(0)
       this.enemyArmies.splice(0)
@@ -173,9 +202,31 @@ export class Overworld extends Scene {
 
     EventBus.on('createSoldier', () => {
       this.actors.push(
-        new OverworldFriend(this.board, this, 0, 0, 'overworldIdle1', [
-          { constructor: SoldierC, type: 'Soldier' }
-        ])
+        new OverworldFriend(
+          this.board,
+          this,
+          0,
+          0,
+          'overworldIdle1',
+          [{ constructor: SoldierC, type: 'Soldier' }],
+          'Army'
+        )
+      )
+    })
+
+    EventBus.on('createSettlerAt', ({ key, position }) => {
+      this.actors.push(
+        new OverworldFriend(
+          this.board,
+          this,
+          0,
+          0,
+          'settler',
+          [{ constructor: SoldierC, type: 'Soldier' }],
+          'Settler',
+          key,
+          position
+        )
       )
     })
     // this.cameras.main.zoom = 3
@@ -203,5 +254,67 @@ export class Overworld extends Scene {
       delay: 1500,
       repeat: 0
     })
+  }
+
+  createUnitUI(scene, store) {
+    scene.unitUI = new Phaser.GameObjects.Container(scene, 0, 0)
+
+    scene.moveButton = scene.add.sprite(15, -4, 'over_move_button')
+    scene.moveButton.setInteractive()
+    scene.actionButton = scene.add.sprite(-15, -4, 'over_attack_button')
+    scene.actionButton.setInteractive()
+    scene.moveButton.setInteractive()
+    scene.closeUIButton = scene.add.sprite(0, -19, 'over_wait_button')
+    scene.closeUIButton.setInteractive()
+    scene.buildUIButton = scene.add.sprite(0, 11, 'over_build_button')
+    scene.buildUIButton.setInteractive()
+    scene.unitUI.add([
+      scene.moveButton,
+      scene.actionButton,
+      scene.closeUIButton,
+      scene.buildUIButton
+    ])
+
+    scene.add.existing(scene.unitUI)
+    scene.unitUI.setVisible(false)
+    scene.unitUI.setDepth(999)
+
+    scene.moveButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasMoved && !scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showMoveableArea()
+        }
+      },
+      this
+    )
+    scene.actionButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showPossibleActions()
+        }
+      },
+      this
+    )
+    scene.closeUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.hasActed = true
+      },
+      this
+    )
+
+    scene.buildUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.build()
+      },
+      this
+    )
   }
 }

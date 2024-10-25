@@ -62,6 +62,9 @@ export const useGameStore = defineStore('game', {
     selectUnit(unit) {
       this.unselectUnit(this.selectedUnit, unit)
       this.selectedUnit = unit
+      unit.setDepth(999)
+      // unit.scene.cameras.main.startFollow(unit, true, 0.05, 0.05)
+      // unit.scene.cameras.main.stopFollow()
       //   this.selector.setAlpha(1)
       //   this.selector.x = unit.x
       //   this.selector.y = unit.y
@@ -69,8 +72,9 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
-      if (unit.UI) {
-        unit.UI.setVisible(false)
+      unit.setDepth(unit.y)
+      if (unit.scene?.unitUI) {
+        unit.scene.unitUI.setVisible(false)
       }
     },
     sellCard(index) {
@@ -125,10 +129,10 @@ export const useGameStore = defineStore('game', {
       })
     },
     removeUnitUI(chess) {
-      chess.UI?.setVisible(false)
+      chess.scene.scene.unitUI?.setVisible(false)
     },
     showUnitUI(chess) {
-      chess.UI?.setVisible(true)
+      chess.scene.scene.unitUI?.setVisible(true)
     },
     setWarData(data) {
       this.warData = {
