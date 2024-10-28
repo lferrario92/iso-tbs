@@ -10,10 +10,11 @@ export class Castle extends BuildingFriend {
     this.menuButtons = []
     let scale = 2
 
-    const createArmyButton = { key: 'primaryAttackImage', callback: 'createArmy' }
-    const createSettlerButton = { key: 'primaryAttackImage', callback: 'createSettler' }
+    const createArmyButton = { key: 'create_army_button', callback: 'createArmy' }
+    const createSettlerButton = { key: 'create_settler_button', callback: 'createSettler' }
+    const createFarmerButton = { key: 'create_farmer_button', callback: 'createFarmer' }
 
-    this.menuButtons = [createArmyButton, createSettlerButton]
+    this.menuButtons = [createArmyButton, createSettlerButton, createFarmerButton]
 
     this._actionMarkers = []
   }
@@ -29,7 +30,7 @@ export class Castle extends BuildingFriend {
     return this
   }
 
-  showPossibleActions() {
+  showPossibleActions(unitType) {
     this.hidePossibleActions()
     if (this.hasActed) {
       return
@@ -47,7 +48,7 @@ export class Castle extends BuildingFriend {
             2,
             1,
             () => {
-              EventBus.emit('createSettlerAt', {
+              EventBus.emit(`create${unitType}At`, {
                 key: 0,
                 position: tileXY
               })
@@ -60,12 +61,12 @@ export class Castle extends BuildingFriend {
   }
 
   createArmy() {
-    console.log('create army')
+    this.showPossibleActions('Army')
   }
   createSettler() {
-    console.log('create settler')
-    const store = useGameStore()
-
-    this.showPossibleActions()
+    this.showPossibleActions('Settler')
+  }
+  createFarmer() {
+    this.showPossibleActions('Farmer')
   }
 }

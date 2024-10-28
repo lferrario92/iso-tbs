@@ -123,12 +123,12 @@ export class OverworldUI extends Scene {
 
       if (unit.type === 'Building') {
         this.subTitle = this.add
-          .text(30, 145, 'Units', {
+          .text(10, 145, 'Create unit', {
             fontFamily: 'PublicPixel',
             fontSize: '10px',
             align: 'center'
           })
-          .setOrigin()
+          .setOrigin(0, 0)
 
         this.buttonContainer = unit.menuButtons.map((button) => {
           let sprite = new Phaser.GameObjects.Sprite(this, 0, 0, button.key)
@@ -152,8 +152,8 @@ export class OverworldUI extends Scene {
           height: 3,
           cellWidth: 40,
           cellHeight: 40,
-          x: 30,
-          y: 180
+          x: 20,
+          y: 170
         })
       }
     })

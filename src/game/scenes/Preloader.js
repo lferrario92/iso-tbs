@@ -48,6 +48,13 @@ export class Preloader extends Scene {
     this.load.image('over_build_button', 'ingame_ui/overworld_buttons/build_button.png')
     this.load.image('over_wait_button', 'ingame_ui/overworld_buttons/wait_button.png')
 
+    this.load.image(
+      'create_settler_button',
+      'ingame_ui/overworld_buttons/create_settler_button.png'
+    )
+    this.load.image('create_army_button', 'ingame_ui/overworld_buttons/create_army_button.png')
+    this.load.image('create_farmer_button', 'ingame_ui/overworld_buttons/create_farmer_button.png')
+
     // ENTITIES
 
     this.load.image('castle', 'entities/castletest2.png')

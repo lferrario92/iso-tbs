@@ -247,10 +247,14 @@ export class Game extends Scene {
     )
   }
 
-  update(time, delta) {
-    this.cameraController.update(delta)
+  update(delta) {
+    let all = [this.army1, this.army2].flat()
 
-    var pointer = this.input.activePointer
+    all.forEach((actor) => {
+      actor.setDepth(actor.y)
+    })
+
+    this.cameraController.update(delta)
   }
 
   changeScene() {

@@ -133,7 +133,11 @@ export class Overworld extends Scene {
       0,
       0,
       'overworldIdle1',
-      [{ constructor: SoldierC, type: 'Soldier' }],
+      [
+        { constructor: SoldierC, type: 'Soldier' },
+        { constructor: SoldierC, type: 'Soldier' },
+        { constructor: SoldierC, type: 'Soldier' }
+      ],
       'Army'
     )
     this.player2 = new OverworldFriend(
@@ -142,11 +146,7 @@ export class Overworld extends Scene {
       0,
       0,
       'overworldIdle2',
-      [
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' }
-      ],
+      [{ constructor: SoldierC, type: 'Soldier' }],
       'Farmer'
     )
     this.player3 = new OverworldFoe(
@@ -216,7 +216,7 @@ export class Overworld extends Scene {
 
     EventBus.on('createSettlerAt', ({ key, position }) => {
       this.actors.push(
-        new OverworldFriend(
+        new Settler(
           this.board,
           this,
           0,
@@ -224,6 +224,42 @@ export class Overworld extends Scene {
           'settler',
           [{ constructor: SoldierC, type: 'Soldier' }],
           'Settler',
+          key,
+          position
+        )
+      )
+    })
+
+    EventBus.on('createArmyAt', ({ key, position }) => {
+      this.actors.push(
+        new OverworldFriend(
+          this.board,
+          this,
+          0,
+          0,
+          'overworldIdle1',
+          [
+            { constructor: SoldierC, type: 'Soldier' },
+            { constructor: SoldierC, type: 'Soldier' },
+            { constructor: SoldierC, type: 'Soldier' }
+          ],
+          'Army',
+          key,
+          position
+        )
+      )
+    })
+
+    EventBus.on('createFarmerAt', ({ key, position }) => {
+      this.actors.push(
+        new OverworldFriend(
+          this.board,
+          this,
+          0,
+          0,
+          'overworldIdle2',
+          [{ constructor: SoldierC, type: 'Soldier' }],
+          'Farmer',
           key,
           position
         )

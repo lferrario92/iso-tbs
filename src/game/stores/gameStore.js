@@ -62,7 +62,6 @@ export const useGameStore = defineStore('game', {
     selectUnit(unit) {
       this.unselectUnit(this.selectedUnit, unit)
       this.selectedUnit = unit
-      unit.setDepth(999)
       // unit.scene.cameras.main.startFollow(unit, true, 0.05, 0.05)
       // unit.scene.cameras.main.stopFollow()
       //   this.selector.setAlpha(1)
