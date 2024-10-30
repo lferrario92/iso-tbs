@@ -1,13 +1,13 @@
-import { EventBus } from '../EventBus';
-import { killChessAt } from '../helpers.js'
-import { MoveableMarker, OverworldActionMarker } from './Markers.js'
+import { EventBus } from '../../EventBus'
+import { killChessAt } from '../../helpers.js'
+import { MoveableMarker } from '../Markers.js'
 
 export class OverworldChess extends Phaser.GameObjects.Container {
-  constructor(board, scene, x, y, animation, tileXY) {
+  constructor(board, scene, x, y, animation, key, tileXY) {
     super(scene, x, y, [])
 
     this.selector = scene.add.image(0, 0, 'overworldIndicators', 5)
-    this.sprite = scene.add.sprite(0, -4, 'overworldEntities', 0)
+    this.sprite = scene.add.sprite(0, -4, key || 'overworldEntities', 0)
     this.texture = this.sprite.texture
 
     this.add(this.sprite)
@@ -15,6 +15,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     this.selector.setAlpha(0)
     this.selector.scale = 1.8
     this.bringToTop(this.sprite)
+    this.units = []
 
     this.scene.topGroup.add(this)
 
@@ -47,6 +48,9 @@ export class OverworldChess extends Phaser.GameObjects.Container {
         preTile = board.tileXYZToChess(preTile.x, preTile.y, 0)
         var curLevel = curTile.getData('level')
         var preLevel = preTile.getData('level')
+        if (curTile.getData('level') == -1) {
+          return 999
+        }
         return preLevel >= curLevel ? 1 : 2
       },
       cacheCost: false
@@ -93,6 +97,7 @@ export class OverworldChess extends Phaser.GameObjects.Container {
   }
 
   moveToTile(endTile) {
+    this.scene.input.disable(this.scene)
     if (this.moveTo.isRunning) {
       return false
     }
@@ -112,7 +117,10 @@ export class OverworldChess extends Phaser.GameObjects.Container {
     if (path.length === 0) {
       this.showMoveableArea()
       EventBus.emit('clearUI', this)
-      this.resetMoveFlag()
+      // this.resetMoveFlag()
+      if (this.afterMove) {
+        this.afterMove()
+      }
 
       if (andAct) {
         this.checkPossibleAction()

@@ -8,7 +8,7 @@ export const useEnemyStore = defineStore('enemyStore', {
     players: []
   }),
   actions: {
-    enemyTurn (enemies, players) {
+    enemyTurn(enemies, players) {
       this.enemies = enemies
       this.players = players
       this.playEnemy(this)
@@ -24,7 +24,7 @@ export const useEnemyStore = defineStore('enemyStore', {
 
       EventBus.emit('clearUI', enemy)
 
-      let filteredPlayers = state.players.filter(x => x.active)
+      let filteredPlayers = state.players.filter((x) => x.active)
 
       if (!enemy.hasMoved) {
         console.log(state.currentEnemy, 'move')

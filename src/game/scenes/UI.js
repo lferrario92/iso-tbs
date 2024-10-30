@@ -1,5 +1,5 @@
-import { Scene } from "phaser";
-import { generateGameUI } from "../gameFunctions/GenerateUI";
+import { Scene } from 'phaser'
+import { generateGameUI } from '../gameFunctions/GenerateUI'
 
 export class UI extends Scene {
   constructor() {
@@ -8,5 +8,9 @@ export class UI extends Scene {
 
   create() {
     generateGameUI(this)
+
+    this.events.on('destroy', () => {
+      EventBus.off('updateModifiers')
+    })
   }
 }

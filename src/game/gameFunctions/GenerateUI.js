@@ -1,31 +1,32 @@
-import { EventBus } from "../EventBus"
+import { EventBus } from '../EventBus'
 
 export const generateGameUI = (scene) => {
+  const scale = 3
 
-  const scale = 4
-  
   const endTurnButton = scene.add
-    .sprite(scene.scale.width - (8 * scale), scene.scale.height - (8 * scale), 'endTurnImage')
+    .sprite(scene.scale.width - 8 * scale, scene.scale.height - 8 * scale, 'endTurnImage')
     .setInteractive()
     .setScrollFactor(0, 0)
     .setScale(scale)
-  
+
   const primaryAttackButton = scene.add
-    .sprite(scene.scale.width - (8 * scale), scene.scale.height - (8 * scale), 'primaryAttackImage')
+    .sprite(scene.scale.width - 8 * scale, scene.scale.height - 8 * scale, 'primaryAttackImage')
     .setInteractive()
     .setScrollFactor(0, 0)
     .setScale(scale)
-  
+
   primaryAttackButton.x = primaryAttackButton.x - primaryAttackButton.width * scale
-  
+
   const secondaryAttackButton = scene.add
-    .sprite(scene.scale.width - (8 * scale), scene.scale.height - (8 * scale), 'secondaryAttackImage')
+    .sprite(scene.scale.width - 8 * scale, scene.scale.height - 8 * scale, 'secondaryAttackImage')
     .setInteractive()
     .setScrollFactor(0, 0)
     .setScale(scale)
-  
+
   secondaryAttackButton.x =
-    secondaryAttackButton.x - primaryAttackButton.width * scale - secondaryAttackButton.width * scale
+    secondaryAttackButton.x -
+    primaryAttackButton.width * scale -
+    secondaryAttackButton.width * scale
 
   endTurnButton.on('pointerdown', () => {
     EventBus.emit('endTurn')
@@ -38,11 +39,69 @@ export const generateGameUI = (scene) => {
   secondaryAttackButton.on('pointerdown', () => {
     EventBus.emit('shortBowAttack')
   })
-
-  console.log('endTurnButton', primaryAttackButton)
 }
 
-export const rexUItest = (t) => {      
+export const showModifiers = (scene, x, y, modifiers, title, renderedModifiers) => {
+  let pos = y
+
+  if (renderedModifiers?.length) {
+    renderedModifiers.forEach((el) => el.destroy())
+  }
+
+  let titleText = scene.add.text(x, y, title, {
+    fontFamily: 'PublicPixel',
+    fontSize: '8px',
+    align: 'left'
+  })
+
+  let uimodifiers = modifiers.map((modifier) => {
+    let width = 100
+    let height = 29
+
+    pos = pos + height + 2
+
+    let cont = new Phaser.GameObjects.Container(scene, x + 20, pos, [])
+
+    let modifierBack = scene.add.image(36, 1, 'modifier_back')
+    let iconGraphic = scene.add.image(0, 0, 'cardIcons', modifier.icon)
+    iconGraphic.name = 'iconGraphic'
+
+    let textObject = scene.add.text(15, -7, modifier.text, {
+      fontFamily: 'PublicPixel',
+      fontSize: '8px',
+      align: 'left'
+    })
+
+    let turnsText = scene.add.text(
+      modifier.turns > 0 ? 17 : 12,
+      height / 2 - 12,
+      `(${modifier.turns})`,
+      {
+        fontFamily: 'PublicPixel',
+        fontSize: '6px',
+        align: 'right'
+      }
+    )
+
+    cont.add([modifierBack, iconGraphic, textObject, turnsText])
+    // card.postFX.addShine(1, 0.2, 5)
+    console.log(cont)
+    cont.setSize(width, height)
+
+    return scene.add.existing(cont)
+  })
+  uimodifiers.push(titleText)
+
+  return uimodifiers
+
+  // EventBus.on('updateModifiers', (data) => {
+  //   uimodifiers.forEach((el) => el.destroy())
+
+  //   showModifiers(data.scene, data.x, data.y, data.modifiers, data.title)
+  // })
+}
+
+export const rexUItest = (t) => {
   const COLOR_PRIMARY = 0x4e342e
   const COLOR_LIGHT = 0x7b5e57
   const COLOR_DARK = 0x260e04

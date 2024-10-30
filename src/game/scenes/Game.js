@@ -12,7 +12,7 @@ import { Soldier, SoldierC } from '../classes/Soldier'
 import { useGameStore } from '../stores/gameStore'
 import { useEnemyStore } from '../stores/enemyStore'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-import { generateGameUI } from '../gameFunctions/GenerateUI'
+import { generateGameUI, showModifiers } from '../gameFunctions/GenerateUI'
 import { createAnimations } from '../gameFunctions/Animations'
 import { getAvailableTile } from '../helpers'
 
@@ -43,6 +43,8 @@ export class Game extends Scene {
   create() {
     const store = useGameStore()
     let currentTurn = 0
+
+    console.log('store', store)
 
     // const enemyStore = useEnemyStore()
 
@@ -107,12 +109,31 @@ export class Game extends Scene {
         break
     }
 
-    // const selector = this.add.sprite(0, 0, 'selector')
-    // selector.scale = 2
-    // selector.setAlpha(0)
+    // handle instant modifiers
 
-    // const store = useGameStore()
-    // store.selector = selector
+    this.activeModifiers = []
+    this.pendingModifiers = []
+
+    this.initModifiers(this, store)
+
+    this.activeUI = showModifiers(
+      this.scene.get('UI'),
+      10,
+      20,
+      this.activeModifiers,
+      'Active Modifiers'
+    )
+    this.pendingUI = showModifiers(
+      this.scene.get('UI'),
+      170,
+      20,
+      this.pendingModifiers,
+      'Pending Modifiers'
+    )
+
+    console.log(store)
+    console.log(this)
+    // store.warData.invadingArmy
 
     camera(this)
     buildDrag(this)
@@ -122,20 +143,14 @@ export class Game extends Scene {
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
 
-    // var chessA = new SoldierC(board, this, 0, 0)
-    // var chessB = new SoldierC(board, this, 0, 0)
-    // var chessC = new SoldierC(board, this, 0, 0)
+    this.army1 = []
+    this.army2 = []
 
-    // var enemy = new EyeBallEnemy(board, this, 0, 0)
-    // var enemy = new OrcEnemy(board, this, 0, 0)
-    // var enemy2 = new OrcEnemy(board, this, 0, 0)
-    let { army1, army2 } = []
-
-    army1 = store.warData.invadingArmy.units.map(
-      (unit) => new unit(board, this, 0, 0, placingCoords.invading)
+    this.army1 = store.warData.invadingArmy.units.map(
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading)
     )
-    army2 = store.warData.targetArmy.units.map(
-      (unit) => new unit(board, this, 0, 0, placingCoords.target)
+    this.army2 = store.warData.targetArmy.units.map(
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target)
     )
 
     this.midGroup.setDepth(1)
@@ -143,28 +158,30 @@ export class Game extends Scene {
 
     EventBus.on('endTurn', () => {
       currentTurn++
+      // handle pending modifiers
       if (currentTurn % 2 == 0) {
-        playerTurnStart(army1)
+        this.updateModifiers(this, store)
+        console.log('active: ', this.activeModifiers)
+
+        playerTurnStart(this.army1)
       } else {
-        if (army2.some((x) => x.active)) {
-          let players = army1.filter((x) => x.active)
+        if (this.army2.some((x) => x.active)) {
+          let players = this.army1.filter((x) => x.active)
           enemyTurnStart(
-            army2.filter((x) => x.active),
+            this.army2.filter((x) => x.active),
             players
           )
           // enemyStore.enemyTurn([enemy, enemy2].filter((x) => x.active), players)
         } else {
           currentTurn = 0
 
-          console.log(store)
-          // kill overworld unit
-          // clear overworld UI
-
           store.warData.targetArmy.overWorldChess.destroy()
           EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
 
-          this.scene.switch('Overworld')
-          console.log('game stop')
+          this.scene.switch('Overworld').launch('OverworldUI')
+          this.scene.stop('UI')
+          this.scene.start('OverworldUI')
+
           EventBus.removeListener('endTurn')
           this.scene.stop('Game')
         }
@@ -172,15 +189,72 @@ export class Game extends Scene {
     })
     this.goFullscreen()
 
-    // generateGameUI(this)
-
     EventBus.emit('current-scene-ready', this)
+    this.events.on('destroy', () => {
+      EventBus.off('endTurn')
+    })
   }
 
-  update(time, delta) {
-    this.cameraController.update(delta)
+  initModifiers(scene, store) {
+    store.warData.invadingArmy.modifiers.forEach((modifier) => {
+      modifier.from = 'friend'
+      if (modifier.turns > 0) {
+        this.activeModifiers.push(modifier)
+      } else {
+        this.pendingModifiers.push(modifier)
+      }
+    })
+    // store.warData.targetArmy.modifiers.forEach((modifier) => {
+    //   this.handleModifier(scene, store, modifier)
+    // })
+  }
 
-    var pointer = this.input.activePointer
+  updateModifiers(scene, store) {
+    this.activeModifiers.forEach((modifier, index) => {
+      modifier.turns = modifier.turns - 1
+
+      if (modifier.turns <= 0) {
+        this.activeModifiers.splice(index, 1)
+      }
+    })
+
+    this.pendingModifiers.forEach((modifier, index) => {
+      modifier.turns = modifier.turns + 1
+
+      if (modifier.turns >= 0) {
+        modifier.turns = modifier.active
+        this.activeModifiers.push(modifier)
+        this.pendingModifiers.splice(index, 1)
+      }
+    })
+
+    this.activeUI = showModifiers(
+      this.scene.get('UI'),
+      10,
+      20,
+      this.activeModifiers,
+      'Active Modifiers',
+      this.activeUI
+    )
+
+    this.pendingUI = showModifiers(
+      this.scene.get('UI'),
+      170,
+      20,
+      this.pendingModifiers,
+      'Pending Modifiers',
+      this.pendingUI
+    )
+  }
+
+  update(delta) {
+    let all = [this.army1, this.army2].flat()
+
+    all.forEach((actor) => {
+      actor.setDepth(actor.y)
+    })
+
+    this.cameraController.update(delta)
   }
 
   changeScene() {
@@ -189,6 +263,7 @@ export class Game extends Scene {
 
   startCutscene() {
     this.scene.manager.scenes.find((x) => x.sys.config === 'BattleCutscene').restart()
+    this.scene.setVisible(false, 'UI')
     this.scene.switch('BattleCutscene')
   }
 

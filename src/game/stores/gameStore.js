@@ -8,8 +8,14 @@ import { OrcEnemy } from '../classes/Enemies'
 export const useGameStore = defineStore('game', {
   state: () => ({
     selectedUnit: null,
+    selectedBuilding: null,
     selector: null,
     fightCutscene: null,
+    createdAnimations: {
+      game: false,
+      overworld: false,
+      market: false
+    },
     currentFriend: {
       attackType: null,
       texture: {
@@ -23,21 +29,41 @@ export const useGameStore = defineStore('game', {
     },
     warData: {
       invadingArmy: {
-        units: [SoldierC, SoldierC],
+        units: [
+          { constructor: SoldierC, type: 'Soldier' },
+          { constructor: SoldierC, type: 'Soldier' }
+        ],
         modifiers: null,
         overWorldChess: null
       },
       targetArmy: {
-        units: [OrcEnemy],
+        units: [{ constructor: OrcEnemy, type: 'Orc' }],
         modifiers: null,
         overWorldChess: null
       }
-    }
+    },
+    money: 200,
+    cards: [
+      {
+        key: 'cards',
+        frame: 3,
+        price: 500,
+        turns: -2,
+        back: 0,
+        icon: 0,
+        modifier: 'atkUp',
+        amount: 20,
+        active: 4,
+        text: 'ATK +20'
+      }
+    ]
   }),
   actions: {
     selectUnit(unit) {
       this.unselectUnit(this.selectedUnit, unit)
       this.selectedUnit = unit
+      // unit.scene.cameras.main.startFollow(unit, true, 0.05, 0.05)
+      // unit.scene.cameras.main.stopFollow()
       //   this.selector.setAlpha(1)
       //   this.selector.x = unit.x
       //   this.selector.y = unit.y
@@ -45,6 +71,39 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.selector.setAlpha(0)
+      unit.setDepth(unit.y)
+      if (unit.scene?.unitUI) {
+        unit.scene.unitUI.setVisible(false)
+      }
+    },
+    sellCard(index) {
+      this.addMoney(this.cards[index].price)
+      this.removeCard(index)
+    },
+    addCard(card) {
+      this.cards.push(card.getData('raw'))
+    },
+    removeCard(index) {
+      this.cards.splice(index, 1)
+    },
+    addMoney(amount) {
+      this.money = this.money + amount
+    },
+    removeMoney(amount) {
+      this.money = this.money - amount
+    },
+    handleModifiers(army) {
+      // {
+      //   "key": "cards",
+      //   "frame": 1,
+      //   "price": 50,
+      //   "turns": -3,
+      //   "back": 0,
+      //   "icon": 0,
+      //   "modifier": "crit",
+      //   "amount": 10,
+      //   "text": "texto"
+      // }
     },
     removeAllMobableMarker(chess) {
       if (!chess.rexChess.board) {
@@ -68,11 +127,20 @@ export const useGameStore = defineStore('game', {
         }
       })
     },
+    removeUnitUI(chess) {
+      chess.scene.scene.unitUI?.setVisible(false)
+    },
+    showUnitUI(chess) {
+      chess.scene.scene.unitUI?.setVisible(true)
+    },
     setWarData(data) {
       this.warData = {
         ...this.warData,
         ...data
       }
+    },
+    setInvadingModifiers(modifiers) {
+      this.warData.invadingArmy.modifiers = modifiers
     },
     getHelp() {
       return this.currentFriend || this.currentFoe || this.selectedUnit
