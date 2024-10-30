@@ -52,6 +52,10 @@ const playEnemy = async (enemy) => {
 
 export const enemyOverworldTurnStart = (units) => {
   units.forEach((unit) => {
+    if (!unit.active) {
+      return
+    }
+
     let tile = RandomFromArray(
       unit.rexChess.board
         .getNeighborTileXY(units[0].rexChess.tileXYZ, [0, 1, 2, 3])

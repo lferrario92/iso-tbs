@@ -16,6 +16,7 @@ import { playerOverworldTurnStart } from '../gameFunctions/PlayerTurnStart.js'
 import { enemyOverworldTurnStart } from '../gameFunctions/EnemyTurnStart.js'
 import { useGameStore } from '../stores/gameStore.js'
 import { Settler } from '../classes/OverworldUnits/Settler.js'
+import { Army } from '../classes/OverworldUnits/Army.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -232,7 +233,7 @@ export class Overworld extends Scene {
 
     EventBus.on('createArmyAt', ({ key, position }) => {
       this.actors.push(
-        new OverworldFriend(
+        new Army(
           this.board,
           this,
           0,

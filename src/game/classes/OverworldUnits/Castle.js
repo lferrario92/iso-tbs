@@ -1,4 +1,3 @@
-import { useGameStore } from '../../stores/gameStore'
 import { EventBus } from '../../EventBus'
 import { BuildingFriend } from './BuildingFriend'
 import { OverworldActionMarker } from '../Markers'
@@ -8,7 +7,6 @@ export class Castle extends BuildingFriend {
     super(board, scene, x, y, sprite, callback, frame, tileXY, name)
 
     this.menuButtons = []
-    let scale = 2
 
     const createArmyButton = { key: 'create_army_button', callback: 'createArmy' }
     const createSettlerButton = { key: 'create_settler_button', callback: 'createSettler' }
