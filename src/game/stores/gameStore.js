@@ -11,6 +11,7 @@ export const useGameStore = defineStore('game', {
     selectedBuilding: null,
     selector: null,
     fightCutscene: null,
+    resources: {},
     createdAnimations: {
       game: false,
       overworld: false,
@@ -43,6 +44,7 @@ export const useGameStore = defineStore('game', {
       }
     },
     money: 200,
+    food: 0,
     cards: [
       {
         key: 'cards',
@@ -58,6 +60,14 @@ export const useGameStore = defineStore('game', {
       }
     ]
   }),
+  getters: {
+    getMoney(state) {
+      return state.money
+    },
+    getFood(state) {
+      return state.food
+    }
+  },
   actions: {
     selectUnit(unit) {
       this.unselectUnit(this.selectedUnit, unit)
@@ -70,6 +80,7 @@ export const useGameStore = defineStore('game', {
     },
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
+      unit.hideMoveableArea && unit.hideMoveableArea()
       unit.selector.setAlpha(0)
       unit.setDepth(unit.y)
       if (unit.scene?.unitUI) {

@@ -17,6 +17,7 @@ import { enemyOverworldTurnStart } from '../gameFunctions/EnemyTurnStart.js'
 import { useGameStore } from '../stores/gameStore.js'
 import { Settler } from '../classes/OverworldUnits/Settler.js'
 import { Army } from '../classes/OverworldUnits/Army.js'
+import { Farmer } from '../classes/OverworldUnits/Farmer.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -91,9 +92,17 @@ export class Overworld extends Scene {
 
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
-    this.castle = new BuildingFriend(this.board, this, 0, 0, 'castle', () => {
-      this.changeScene('Merchant')
-    })
+    this.castle = new BuildingFriend(
+      this.board,
+      this,
+      0,
+      0,
+      'entitest',
+      () => {
+        this.changeScene('Merchant')
+      },
+      11
+    )
     this.castle2 = new BuildingFriend(
       this.board,
       this,
@@ -135,6 +144,8 @@ export class Overworld extends Scene {
       0,
       'overworldIdle1',
       [
+        { constructor: SoldierC, type: 'Soldier' },
+        { constructor: SoldierC, type: 'Soldier' },
         { constructor: SoldierC, type: 'Soldier' },
         { constructor: SoldierC, type: 'Soldier' },
         { constructor: SoldierC, type: 'Soldier' }
@@ -253,7 +264,7 @@ export class Overworld extends Scene {
 
     EventBus.on('createFarmerAt', ({ key, position }) => {
       this.actors.push(
-        new OverworldFriend(
+        new Farmer(
           this.board,
           this,
           0,

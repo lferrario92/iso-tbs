@@ -1,0 +1,20 @@
+[
+  {
+    "type": "Army",
+    "key": "create_army_button",
+    "callback": "createArmy",
+    "requirements": { "money": 100 }
+  },
+  {
+    "type": "Settler",
+    "key": "create_settler_button",
+    "callback": "createSettler",
+    "requirements": { "money": 120 }
+  },
+  {
+    "type": "Farmer",
+    "key": "create_farmer_button",
+    "callback": "createFarmer",
+    "requirements": { "money": 80 }
+  }
+]

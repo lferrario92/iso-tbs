@@ -112,6 +112,7 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
     super(scene, tileXY.x, tileXY.y, key, frame)
 
     group.add(this)
+    this.setDepth(this.y)
 
     board.addChess(this, tileXY.x, tileXY.y, -1)
 
