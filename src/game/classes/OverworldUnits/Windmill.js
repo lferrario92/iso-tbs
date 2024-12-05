@@ -14,6 +14,8 @@ export class Windmill extends BuildingFriend {
 
     this.sprite.play('windmill')
     this.setDepth(this.y)
+
+    this.upgradeTiles()
   }
 
   testCallback() {
@@ -33,6 +35,12 @@ export class Windmill extends BuildingFriend {
     }
     this._actionMarkers.length = 0
     return this
+  }
+
+  upgradeTiles() {
+    this.scene.board.tileXYArrayToChessArray(this.getBorderTiles(), 0).forEach((tile) => {
+      tile.food = tile.food + 1
+    })
   }
 
   showPossibleActions() {

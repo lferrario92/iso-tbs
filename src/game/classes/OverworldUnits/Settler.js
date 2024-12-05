@@ -22,6 +22,8 @@ export class Settler extends OverworldFriend {
       'Castle'
     )
     EventBus.emit('clearOverworldUI')
+    building.setDepth(building.y)
+    this.scene.buildings.push(building)
 
     this.destroy()
   }

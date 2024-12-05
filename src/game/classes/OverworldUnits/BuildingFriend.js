@@ -43,9 +43,13 @@ export class BuildingFriend extends Building {
     return tileXYArray
   }
 
+  getBorderTiles() {
+    return this.rexChess.board.getEmptyTileXYArrayInRange(this.rexChess.tileXYZ, 1, 1)
+  }
+
   testCallback() {
     // let tiles = this.rexChess.board.ringToChessArray(this.rexChess.tileXYZ, 2, 0)
-    let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 2, 0)
+    let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 1, 0)
     this.showBorders(tiles)
 
     EventBus.emit('selectUnit', this)
@@ -54,12 +58,14 @@ export class BuildingFriend extends Building {
   showBorders(tiles) {
     this.hideBorders()
     tiles.forEach((tile, index) => {
+      if (index === 0) return
       this._borders
         .push
         // new MoveableMarker(this, tile, this.scene.midGroup, 'overworldIndicators', 1, 1)
         ()
       this.scene.add.tween({
         targets: tile,
+        // delay: 0,
         delay: (index + 1) * 50,
         duration: 300,
         repeat: 0,

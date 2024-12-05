@@ -200,6 +200,7 @@ export class OverworldUI extends Scene {
 
     EventBus.on('updateResourcesUI', () => {
       this.money.setText(store.money)
+      this.food.setText(store.food)
     })
 
     createSoldier.on('pointerdown', () => {

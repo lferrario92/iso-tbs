@@ -84,6 +84,7 @@ export class Tile extends Phaser.GameObjects.Sprite {
     if (isOverworld) {
       super(scene, x, y, 'overworldTiles', level + 11)
       this.scale = 1
+      this.food = level ? 2 : 1
     } else {
       const tileSet = tiles[store.warData.level || 0]
       let key = tileSet[level]

@@ -70,6 +70,14 @@ export const useGameStore = defineStore('game', {
   },
   actions: {
     selectUnit(unit) {
+      if (
+        this.selectedUnit &&
+        this.areTheSame(this.selectedUnit, unit) &&
+        this.selectedUnit._markers?.length
+      ) {
+        // fix for exploding scene when selecting the same unit and movement markers are on
+        this.selectedUnit._markers.forEach((marker) => marker.clearFX())
+      }
       this.unselectUnit(this.selectedUnit, unit)
       this.selectedUnit = unit
       // unit.scene.cameras.main.startFollow(unit, true, 0.05, 0.05)
@@ -102,6 +110,12 @@ export const useGameStore = defineStore('game', {
     },
     removeMoney(amount) {
       this.money = this.money - amount
+    },
+    addFood(amount) {
+      this.food = this.food + amount
+    },
+    removeFood(amount) {
+      this.food = this.food - amount
     },
     handleModifiers(army) {
       // {

@@ -18,6 +18,7 @@ import { useGameStore } from '../stores/gameStore.js'
 import { Settler } from '../classes/OverworldUnits/Settler.js'
 import { Army } from '../classes/OverworldUnits/Army.js'
 import { Farmer } from '../classes/OverworldUnits/Farmer.js'
+import { Castle } from '../classes/OverworldUnits/Castle.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -59,7 +60,7 @@ export class Overworld extends Scene {
           cellHeight: 8,
           type: 1
         }),
-        width: 10,
+        width: 5,
         height: 5
       },
       true
@@ -70,14 +71,14 @@ export class Overworld extends Scene {
     this.cameras.main.setZoom(0)
     this.cameras.main.zoomTo(5, 1500, 'Cubic')
 
-    this.test = this.add.sprite(0, 0, 'overworldTiles', 43)
-    this.board.addChess(this.test, 1, 1, 1)
-    this.test.y = this.test.y - 3
+    // this.test = this.add.sprite(0, 0, 'overworldTiles', 43)
+    // this.board.addChess(this.test, 1, 1, 1)
+    // this.test.y = this.test.y - 3
 
-    this.test.setDepth(this.test.y)
+    // this.test.setDepth(this.test.y)
 
-    this.test2 = this.add.sprite(0, 0, 'entitest', 20).setScale(0.6)
-    this.board.addChess(this.test2, 1, 3, 1)
+    // this.test2 = this.add.sprite(0, 0, 'entitest', 20).setScale(0.6)
+    // this.board.addChess(this.test2, 1, 3, 1)
 
     this.anims.create({
       key: 'windmill',
@@ -88,11 +89,11 @@ export class Overworld extends Scene {
       repeat: -1
     })
 
-    this.test2.play('windmill')
+    // this.test2.play('windmill')
 
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
-    this.castle = new BuildingFriend(
+    this.store = new BuildingFriend(
       this.board,
       this,
       0,
@@ -103,30 +104,16 @@ export class Overworld extends Scene {
       },
       11
     )
-    this.castle2 = new BuildingFriend(
-      this.board,
-      this,
-      0,
-      0,
-      'overworldTiles',
-      () => {
-        this.changeScene('PreBattle')
-      },
-      44
-    )
-
-    console.log(this)
 
     createOverworldAnimations(this)
 
-    this.topGroup.add(this.test)
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
 
     this.playerArmy = []
     this.enemyArmies = []
 
-    this.player4 = new Settler(
+    this.startingSettler = new Settler(
       this.board,
       this,
       0,
@@ -137,31 +124,23 @@ export class Overworld extends Scene {
       'settler'
     )
 
-    this.player = new OverworldFriend(
-      this.board,
-      this,
-      0,
-      0,
-      'overworldIdle1',
-      [
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' },
-        { constructor: SoldierC, type: 'Soldier' }
-      ],
-      'Army'
-    )
-    this.player2 = new OverworldFriend(
-      this.board,
-      this,
-      0,
-      0,
-      'overworldIdle2',
-      [{ constructor: SoldierC, type: 'Soldier' }],
-      'Farmer'
-    )
-    this.player3 = new OverworldFoe(
+    // this.player = new OverworldFriend(
+    //   this.board,
+    //   this,
+    //   0,
+    //   0,
+    //   'overworldIdle1',
+    //   [
+    //     { constructor: SoldierC, type: 'Soldier' },
+    //     { constructor: SoldierC, type: 'Soldier' },
+    //     { constructor: SoldierC, type: 'Soldier' },
+    //     { constructor: SoldierC, type: 'Soldier' },
+    //     { constructor: SoldierC, type: 'Soldier' }
+    //   ],
+    //   'Army'
+    // )
+
+    this.enemy = new OverworldFoe(
       this.board,
       this,
       0,
@@ -177,15 +156,8 @@ export class Overworld extends Scene {
 
     this.createUnitUI(this, store)
 
-    this.actors = [
-      this.player,
-      this.player2,
-      this.player3,
-      this.player4,
-      this.castle,
-      this.castle2,
-      this.test
-    ]
+    this.actors = [this.enemy, this.startingSettler, this.store]
+    this.buildings = []
 
     EventBus.on('endTurnOverworld', () => {
       store.removeUnitUI(this)
@@ -193,13 +165,15 @@ export class Overworld extends Scene {
       this.playerArmy.splice(0)
       this.enemyArmies.splice(0)
 
-      this.actors.forEach((actor) => {
-        if (actor instanceof OverworldFriend) {
-          this.playerArmy.push(actor)
-        } else if (actor instanceof OverworldFoe) {
-          this.enemyArmies.push(actor)
-        }
-      })
+      this.actors
+        .filter((x) => x.active)
+        .forEach((actor) => {
+          if (actor instanceof OverworldFriend) {
+            this.playerArmy.push(actor)
+          } else if (actor instanceof OverworldFoe) {
+            this.enemyArmies.push(actor)
+          }
+        })
 
       if (this.currentTurn % 10 == 0) {
         this.snowing()
@@ -207,6 +181,15 @@ export class Overworld extends Scene {
 
       if (this.currentTurn % 2 == 0) {
         playerOverworldTurnStart(this.playerArmy)
+        this.buildings.forEach((building) => {
+          if (building instanceof Castle) {
+            store.addFood(building.calculateFood())
+          }
+        })
+        this.playerArmy.forEach((army) => {
+          store.removeFood(army.foodConsumption)
+        })
+        EventBus.emit('updateResourcesUI')
       } else {
         enemyOverworldTurnStart(this.enemyArmies)
       }
@@ -243,23 +226,25 @@ export class Overworld extends Scene {
     })
 
     EventBus.on('createArmyAt', ({ key, position }) => {
-      this.actors.push(
-        new Army(
-          this.board,
-          this,
-          0,
-          0,
-          'overworldIdle1',
-          [
-            { constructor: SoldierC, type: 'Soldier' },
-            { constructor: SoldierC, type: 'Soldier' },
-            { constructor: SoldierC, type: 'Soldier' }
-          ],
-          'Army',
-          key,
-          position
-        )
+      let newArmy = new Army(
+        this.board,
+        this,
+        0,
+        0,
+        'overworldIdle1',
+        [
+          { constructor: SoldierC, type: 'Soldier' },
+          { constructor: SoldierC, type: 'Soldier' },
+          { constructor: SoldierC, type: 'Soldier' }
+        ],
+        'Army',
+        key,
+        position
       )
+
+      newArmy.hasActed = true
+
+      this.actors.push(newArmy)
     })
 
     EventBus.on('createFarmerAt', ({ key, position }) => {

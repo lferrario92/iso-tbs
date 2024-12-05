@@ -22,6 +22,7 @@ export class Farmer extends OverworldFriend {
       'Windmill'
     )
     EventBus.emit('clearOverworldUI')
+    building.setDepth(building.y)
 
     this.destroy()
   }

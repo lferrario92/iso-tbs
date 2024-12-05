@@ -10,6 +10,7 @@ export class Castle extends BuildingFriend {
 
     this.menuButtons = [...units]
 
+    this.board = board
     this._actionMarkers = []
   }
 
@@ -54,6 +55,23 @@ export class Castle extends BuildingFriend {
         )
       })
     return tileXYArray
+  }
+
+  calculateFood() {
+    let tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0)
+
+    tiles.forEach((tile) => {
+      this.scene.add
+        .text(tile.x, tile.y - 2, tile.food, {
+          fontFamily: 'PublicPixel',
+          fontSize: '12px',
+          align: 'left'
+        })
+        .setOrigin(0, 0)
+        .setScale(0.2)
+    })
+
+    return tiles.reduce((total, tile) => tile.food + total, 0)
   }
 
   createArmy() {
