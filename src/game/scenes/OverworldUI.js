@@ -114,7 +114,7 @@ export class OverworldUI extends Scene {
           let unitContainer = new Phaser.GameObjects.Container(this, 0, 0, [])
 
           let health = this.add
-            .text(0, 18, '100', {
+            .text(0, 18, unit.health || 909, {
               fontFamily: 'PublicPixel',
               fontSize: '10px',
               align: 'center'

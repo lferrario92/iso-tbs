@@ -154,9 +154,22 @@ export class Overworld extends Scene {
       'Orc'
     )
 
+    this.enemy2 = new OverworldFoe(
+      this.board,
+      this,
+      0,
+      0,
+      'overworldOrcIdle',
+      [
+        { constructor: OrcEnemy, type: 'Orc' },
+        { constructor: OrcEnemy, type: 'Orc' }
+      ],
+      'Orc'
+    )
+
     this.createUnitUI(this, store)
 
-    this.actors = [this.enemy, this.startingSettler, this.store]
+    this.actors = [this.enemy, this.enemy2, this.startingSettler, this.store]
     this.buildings = []
 
     EventBus.on('endTurnOverworld', () => {
@@ -203,7 +216,7 @@ export class Overworld extends Scene {
           0,
           0,
           'overworldIdle1',
-          [{ constructor: SoldierC, type: 'Soldier' }],
+          [{ constructor: SoldierC, health: 100, type: 'Soldier' }],
           'Army'
         )
       )
@@ -217,7 +230,7 @@ export class Overworld extends Scene {
           0,
           0,
           'settler',
-          [{ constructor: SoldierC, type: 'Soldier' }],
+          [{ constructor: SoldierC, health: 100, type: 'Soldier' }],
           'Settler',
           key,
           position
@@ -233,9 +246,9 @@ export class Overworld extends Scene {
         0,
         'overworldIdle1',
         [
-          { constructor: SoldierC, type: 'Soldier' },
-          { constructor: SoldierC, type: 'Soldier' },
-          { constructor: SoldierC, type: 'Soldier' }
+          { constructor: SoldierC, health: 100, type: 'Soldier' },
+          { constructor: SoldierC, health: 100, type: 'Soldier' },
+          { constructor: SoldierC, health: 100, type: 'Soldier' }
         ],
         'Army',
         key,
@@ -255,7 +268,7 @@ export class Overworld extends Scene {
           0,
           0,
           'overworldIdle2',
-          [{ constructor: SoldierC, type: 'Soldier' }],
+          [{ constructor: SoldierC, health: 100, type: 'Soldier' }],
           'Farmer',
           key,
           position

@@ -153,7 +153,7 @@ export const useGameStore = defineStore('game', {
       })
     },
     removeUnitUI(chess) {
-      chess.scene.scene.unitUI?.setVisible(false)
+      chess?.scene?.scene?.unitUI?.setVisible(false)
     },
     showUnitUI(chess) {
       chess.scene.scene.unitUI?.setVisible(true)

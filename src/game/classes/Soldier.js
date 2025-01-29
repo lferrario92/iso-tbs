@@ -27,7 +27,7 @@ export class Soldier extends Chess {
       frameRate: 12,
       repeat: -1
     })
-    
+
     scene.anims.create({
       key: 'soldierAttack',
       frames: this.anims.generateFrameNumbers('Soldier', {
@@ -37,7 +37,6 @@ export class Soldier extends Chess {
       repeat: 0
     })
 
-    
     scene.anims.create({
       key: 'soldierDamage',
       frames: this.anims.generateFrameNumbers('Soldier', {
@@ -61,9 +60,9 @@ export class Soldier extends Chess {
 }
 
 export class SoldierC extends Cont {
-  constructor(board, scene, x, y, originCoords) {
+  constructor(board, scene, x, y, originCoords, health) {
     // attrs, health, damage
-    super(board, scene, x, y, 'Soldier', 100, 25, originCoords)
+    super(board, scene, x, y, 'Soldier', health || 100, 25, originCoords)
 
     this.sprite.scale = 1
     this.sprite.y = this.sprite.y - 4

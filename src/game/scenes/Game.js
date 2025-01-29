@@ -147,14 +147,30 @@ export class Game extends Scene {
     this.army2 = []
 
     this.army1 = store.warData.invadingArmy.units.map(
-      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading)
+      // constructor(board, scene, x, y, key, health, damage, tileXY) {
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading, unit.health)
     )
     this.army2 = store.warData.targetArmy.units.map(
-      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target)
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target, unit.health)
     )
 
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
+
+    EventBus.on('looseGame', () => {
+      currentTurn = 0
+
+      EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
+      this.handleunitDamage(store.warData.targetArmy, 2)
+
+      this.scene.switch('Overworld').launch('OverworldUI')
+      this.scene.stop('UI')
+      this.scene.start('OverworldUI')
+
+      EventBus.removeListener('endTurn')
+      this.scene.stop('Game')
+      store.warData.invadingArmy.overWorldChess.destroy()
+    })
 
     EventBus.on('endTurn', () => {
       currentTurn++
@@ -175,8 +191,8 @@ export class Game extends Scene {
         } else {
           currentTurn = 0
 
-          store.warData.targetArmy.overWorldChess.destroy()
           EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
+          this.handleunitDamage(store.warData.invadingArmy, 1)
 
           this.scene.switch('Overworld').launch('OverworldUI')
           this.scene.stop('UI')
@@ -184,6 +200,7 @@ export class Game extends Scene {
 
           EventBus.removeListener('endTurn')
           this.scene.stop('Game')
+          store.warData.targetArmy.overWorldChess.destroy()
         }
       }
     })
@@ -192,6 +209,7 @@ export class Game extends Scene {
     EventBus.emit('current-scene-ready', this)
     this.events.on('destroy', () => {
       EventBus.off('endTurn')
+      EventBus.off('looseGame')
     })
   }
 
@@ -207,6 +225,16 @@ export class Game extends Scene {
     // store.warData.targetArmy.modifiers.forEach((modifier) => {
     //   this.handleModifier(scene, store, modifier)
     // })
+  }
+
+  handleunitDamage(army, whichArmy) {
+    army.units.forEach((unit, index) => {
+      if (this[`army${whichArmy}`][index].health <= 0) {
+        army.units.splice(index, 1)
+      } else {
+        unit.health = this[`army${whichArmy}`][index].health
+      }
+    })
   }
 
   updateModifiers(scene, store) {

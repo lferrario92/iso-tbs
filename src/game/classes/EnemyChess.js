@@ -1,3 +1,4 @@
+import { EventBus } from '../EventBus.js'
 import { delay, getAvailableTile, getUnitAt, killChessAt } from '../helpers.js'
 import { useGameStore } from '../stores/gameStore.js'
 import { MoveableMarker, ActionMarker } from './Markers.js'
@@ -189,7 +190,8 @@ export class EnemyChess extends Phaser.GameObjects.Container {
 
   async moveTowardsPlayer(players) {
     if (!players.length) {
-      this.scene.game.scene.start('GameOver')
+      EventBus.emit('looseGame')
+      // this.scene.game.scene.start('GameOver')
     }
     this.showMoveableArea()
     var playerChess = this.getClosestPlayerChess(players)
