@@ -23,7 +23,7 @@ export class OverworldUI extends Scene {
       .sprite(this.scale.width - 8 * scale, this.scale.height - 8 * scale, 'endTurnImage')
       .setInteractive()
       .setScrollFactor(0, 0)
-      .setScale(scale)
+      .setScale(3)
 
     const createSoldier = this.add
       .sprite(this.scale.width - 8 * scale, this.scale.height - 8 * scale, 'primaryAttackImage')

@@ -19,6 +19,7 @@ import { Settler } from '../classes/OverworldUnits/Settler.js'
 import { Army } from '../classes/OverworldUnits/Army.js'
 import { Farmer } from '../classes/OverworldUnits/Farmer.js'
 import { Castle } from '../classes/OverworldUnits/Castle.js'
+import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -50,6 +51,16 @@ export class Overworld extends Scene {
       y: this.scale.height / 2
     }
 
+    this.normalBack = this.add
+      .image(center.x, center.y, 'spaceBackground')
+      .setScrollFactor(0.2, 0.2)
+      .setScale(0.5)
+    this.snowingBack = this.add
+      .image(center.x, center.y, 'spaceBackground2')
+      .setScrollFactor(0.2, 0.2)
+      .setScale(0.5)
+      .setAlpha(0)
+
     this.board = new Board(
       this.scene.scene,
       {
@@ -65,6 +76,8 @@ export class Overworld extends Scene {
       },
       true
     )
+
+    this.snowed = false
 
     camera(this)
     buildDrag(this)
@@ -137,7 +150,7 @@ export class Overworld extends Scene {
     //     { constructor: SoldierC, type: 'Soldier' },
     //     { constructor: SoldierC, type: 'Soldier' }
     //   ],
-    //   'Army'
+    //   'Army'z
     // )
 
     this.enemy = new OverworldFoe(
@@ -292,7 +305,36 @@ export class Overworld extends Scene {
   }
 
   snowing() {
-    this.scene.launch('Snowing')
+    if (!this.snowed) {
+      this.scene.launch('Snowing')
+    } else {
+      this.scene.launch('Sunshine')
+    }
+
+    this.snowed = !this.snowed
+
+    if (this.snowed) {
+      this.tweens.addCounter({
+        from: 0,
+        to: 1,
+        duration: 1000,
+        onUpdate: (tween) => {
+          this.normalBack.setAlpha(1 - tween.getValue())
+          this.snowingBack.setAlpha(tween.getValue())
+        }
+      })
+    } else {
+      this.tweens.addCounter({
+        from: 0,
+        to: 1,
+        duration: 1000,
+        onUpdate: (tween) => {
+          this.normalBack.setAlpha(tween.getValue())
+          this.snowingBack.setAlpha(1 - tween.getValue())
+        }
+      })
+    }
+
     this.time.addEvent({
       callback: () => {
         this.board.nextSeason()
@@ -324,6 +366,15 @@ export class Overworld extends Scene {
     scene.add.existing(scene.unitUI)
     scene.unitUI.setVisible(false)
     scene.unitUI.setDepth(999)
+    var clickOutside = new ClickOutside(scene.unitUI)
+
+    clickOutside.on(
+      'clickoutside',
+      (clickoutside, gameObject, pointer) => {
+        store.removeUnitUI(this)
+      },
+      this
+    )
 
     scene.moveButton.on(
       'pointerdown',

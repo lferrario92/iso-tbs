@@ -56,7 +56,32 @@ export class Board extends RexPlugins.Board.Board {
       })
     } else {
       this.season = 'summer'
-      this.getTiles().forEach((x) => x.setSummer())
+      this.getTiles().forEach((x) => {
+        this.scene.tweens
+          .addCounter({
+            from: 255,
+            to: 0,
+            duration: 1000,
+            onUpdate: function (tween) {
+              const value = Math.floor(tween.getValue())
+
+              x.setTint(Phaser.Display.Color.GetColor(value, value, value))
+            }
+          })
+          .on('complete', () => {
+            x.setSummer()
+            this.scene.tweens.addCounter({
+              from: 120,
+              to: 255,
+              duration: 1000,
+              onUpdate: function (tween) {
+                const value = Math.floor(tween.getValue())
+
+                x.setTint(Phaser.Display.Color.GetColor(value, value, value))
+              }
+            })
+          })
+      })
     }
   }
 

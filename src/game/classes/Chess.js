@@ -150,9 +150,9 @@ export class Chess extends Phaser.GameObjects.Sprite {
   takeDamage(damage) {
     this.health = this.health - damage
 
-    if(this.health <= 0) {
-        this.killMe()
-        return 'die'
+    if (this.health <= 0) {
+      this.killMe()
+      return 'die'
     }
   }
 

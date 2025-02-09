@@ -15,6 +15,7 @@ import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { generateGameUI, showModifiers } from '../gameFunctions/GenerateUI'
 import { createAnimations } from '../gameFunctions/Animations'
 import { getAvailableTile } from '../helpers'
+import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside'
 
 export class Game extends Scene {
   constructor() {
@@ -153,6 +154,8 @@ export class Game extends Scene {
     this.army2 = store.warData.targetArmy.units.map(
       (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target, unit.health)
     )
+
+    this.createUnitUI(this, store)
 
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
@@ -303,5 +306,76 @@ export class Game extends Scene {
 
   scaleFullscreen() {
     this.scale.setGameSize(window.innerWidth, window.innerHeight)
+  }
+
+  createUnitUI(scene, store) {
+    scene.unitUI = new Phaser.GameObjects.Container(scene, 0, 0)
+
+    scene.moveButton = scene.add.sprite(15, -4, 'over_move_button')
+    scene.moveButton.setInteractive()
+    scene.actionButton = scene.add.sprite(-15, -4, 'over_attack_button')
+    scene.actionButton.setInteractive()
+    scene.moveButton.setInteractive()
+    scene.closeUIButton = scene.add.sprite(0, -19, 'over_wait_button')
+    scene.closeUIButton.setInteractive()
+    scene.buildUIButton = scene.add.sprite(0, 11, 'over_build_button')
+    scene.buildUIButton.setInteractive()
+    scene.unitUI.add([
+      scene.moveButton,
+      scene.actionButton,
+      scene.closeUIButton,
+      scene.buildUIButton
+    ])
+
+    scene.add.existing(scene.unitUI)
+    scene.unitUI.setVisible(false)
+    scene.unitUI.setDepth(999)
+    var clickOutside = new ClickOutside(scene.unitUI)
+
+    clickOutside.on(
+      'clickoutside',
+      (clickoutside, gameObject, pointer) => {
+        store.removeUnitUI(this)
+      },
+      this
+    )
+
+    scene.moveButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasMoved && !scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showMoveableArea()
+        }
+      },
+      this
+    )
+    scene.actionButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showPossibleActions()
+        }
+      },
+      this
+    )
+    scene.closeUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.hasActed = true
+      },
+      this
+    )
+
+    scene.buildUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.build()
+      },
+      this
+    )
   }
 }
