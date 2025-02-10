@@ -7,13 +7,10 @@ import { Board } from '../classes/Board.js'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
 import { enemyTurnStart } from '../gameFunctions/EnemyTurnStart.js'
 import { playerTurnStart } from '../gameFunctions/PlayerTurnStart'
-import { EyeBallEnemy, OrcEnemy } from '../classes/Enemies'
-import { Soldier, SoldierC } from '../classes/Soldier'
 import { useGameStore } from '../stores/gameStore'
-import { useEnemyStore } from '../stores/enemyStore'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { generateGameUI, showModifiers } from '../gameFunctions/GenerateUI'
-import { createAnimations } from '../gameFunctions/Animations'
+import { createAnimations, createMinifolksAnimations } from '../gameFunctions/Animations'
 import { getAvailableTile } from '../helpers'
 import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside'
 
@@ -137,8 +134,9 @@ export class Game extends Scene {
     // store.warData.invadingArmy
 
     camera(this)
-    buildDrag(this)
+    buildDrag(this, 'Game')
     createAnimations(this)
+    createMinifolksAnimations(this)
 
     this.cameras.main.setZoom(3)
     this.midGroup = this.add.group()

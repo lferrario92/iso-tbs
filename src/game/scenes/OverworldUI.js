@@ -121,7 +121,11 @@ export class OverworldUI extends Scene {
             })
             .setOrigin()
 
-          unitContainer.add([this.add.sprite(0, 0, unit.type, 0).setScale(2), health])
+          // TODO: remove hardcoded y coord for minifolks
+          unitContainer.add([
+            this.add.sprite(0, unit.type == 'ShieldMan' ? -16 : 0, unit.type, 0).setScale(2),
+            health
+          ])
 
           this.add.existing(unitContainer)
           return unitContainer

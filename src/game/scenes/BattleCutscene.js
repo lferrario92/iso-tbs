@@ -35,7 +35,12 @@ export class BattleCutscene extends Scene {
     const friendKey = store.currentFriend.texture.key
     const foeKey = store.currentFoe.texture.key
 
-    let friend = this.add.sprite(center.x - 100, center.y + 60, friendKey)
+    let friend = this.add.sprite(
+      center.x - 100,
+      center.y + (store.currentFriend.cutsceneOffsetY || 60),
+      friendKey
+    )
+
     friend.scale = 8
     const friendIdle = `${friendKey.toLowerCase()}Idle`
     const friendDamage = `${friendKey.toLowerCase()}Damage`
@@ -44,7 +49,11 @@ export class BattleCutscene extends Scene {
 
     friend.play(friendIdle)
 
-    let foe = this.add.sprite(center.x + 100, center.y + 60, foeKey)
+    let foe = this.add.sprite(
+      center.x + 100,
+      center.y + (store.currentFoe.cutsceneOffsetY || 60),
+      foeKey
+    )
     foe.setFlipX(true)
     foe.scale = 8
     const foeIdle = `${foeKey.toLowerCase()}Idle`

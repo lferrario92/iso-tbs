@@ -131,12 +131,12 @@ export class Cont extends Phaser.GameObjects.Container {
 
   moveAlongPath(path, andAct) {
     this.hidePossibleActions()
-    this.sprite.play('soldierWalk')
+    this.sprite.play(this.walkAnimation || 'soldierWalk')
 
     if (path.length === 0) {
       //   this.setFillStyle(0x404040)
       this.showMoveableArea()
-      this.sprite.play('soldierIdle')
+      this.sprite.play(this.idleAnimation || 'soldierIdle')
       EventBus.emit('clearUI', this)
 
       if (andAct) {

@@ -129,6 +129,19 @@ export class Preloader extends Scene {
       frameHeight: 100
     })
 
+    /**
+     ***************************************************
+     *                    MINIFOLK                     *
+     ***************************************************
+     **/
+
+    // ShieldMan
+
+    this.load.spritesheet('ShieldMan', 'sprites/minifolk/Humans/MiniShieldMan.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    })
+
     // BATTLE
 
     this.load.spritesheet('battleTiles', 'isometric_sprites/battle_spritesheet.png', {

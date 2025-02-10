@@ -20,6 +20,7 @@ import { Army } from '../classes/OverworldUnits/Army.js'
 import { Farmer } from '../classes/OverworldUnits/Farmer.js'
 import { Castle } from '../classes/OverworldUnits/Castle.js'
 import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside.js'
+import { ShieldMan } from '../classes/Minifolks/Humans/ShieldMan.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -261,6 +262,7 @@ export class Overworld extends Scene {
         [
           { constructor: SoldierC, health: 100, type: 'Soldier' },
           { constructor: SoldierC, health: 100, type: 'Soldier' },
+          { constructor: ShieldMan, health: 100, type: 'ShieldMan' },
           { constructor: SoldierC, health: 100, type: 'Soldier' }
         ],
         'Army',

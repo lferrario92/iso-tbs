@@ -32,7 +32,7 @@ export const camera = (game) => {
   //   })
 }
 
-export const buildDrag = (scene) => {
+export const buildDrag = (scene, from) => {
   var dragScale = scene.plugins.get('rexpinchplugin').add(scene)
 
   var camera = scene.cameras.main
@@ -47,7 +47,7 @@ export const buildDrag = (scene) => {
       }
 
       if (
-        camera.scrollY - drag1Vector.y / camera.zoom > 63 ||
+        camera.scrollY - drag1Vector.y / camera.zoom > (from == 'Game' ? 93 : 63) ||
         camera.scrollY - drag1Vector.y / camera.zoom < -30
       ) {
         return
