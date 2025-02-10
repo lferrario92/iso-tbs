@@ -7,14 +7,12 @@ import { Board } from '../classes/Board.js'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
 import { enemyTurnStart } from '../gameFunctions/EnemyTurnStart.js'
 import { playerTurnStart } from '../gameFunctions/PlayerTurnStart'
-import { EyeBallEnemy, OrcEnemy } from '../classes/Enemies'
-import { Soldier, SoldierC } from '../classes/Soldier'
 import { useGameStore } from '../stores/gameStore'
-import { useEnemyStore } from '../stores/enemyStore'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { generateGameUI, showModifiers } from '../gameFunctions/GenerateUI'
-import { createAnimations } from '../gameFunctions/Animations'
+import { createAnimations, createMinifolksAnimations } from '../gameFunctions/Animations'
 import { getAvailableTile } from '../helpers'
+import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside'
 
 export class Game extends Scene {
   constructor() {
@@ -136,8 +134,9 @@ export class Game extends Scene {
     // store.warData.invadingArmy
 
     camera(this)
-    buildDrag(this)
+    buildDrag(this, 'Game')
     createAnimations(this)
+    createMinifolksAnimations(this)
 
     this.cameras.main.setZoom(3)
     this.midGroup = this.add.group()
@@ -147,14 +146,32 @@ export class Game extends Scene {
     this.army2 = []
 
     this.army1 = store.warData.invadingArmy.units.map(
-      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading)
+      // constructor(board, scene, x, y, key, health, damage, tileXY) {
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.invading, unit.health)
     )
     this.army2 = store.warData.targetArmy.units.map(
-      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target)
+      (unit) => new unit.constructor(board, this, 0, 0, placingCoords.target, unit.health)
     )
+
+    this.createUnitUI(this, store)
 
     this.midGroup.setDepth(1)
     this.topGroup.setDepth(2)
+
+    EventBus.on('looseGame', () => {
+      currentTurn = 0
+
+      EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
+      this.handleunitDamage(store.warData.targetArmy, 2)
+
+      this.scene.switch('Overworld').launch('OverworldUI')
+      this.scene.stop('UI')
+      this.scene.start('OverworldUI')
+
+      EventBus.removeListener('endTurn')
+      this.scene.stop('Game')
+      store.warData.invadingArmy.overWorldChess.destroy()
+    })
 
     EventBus.on('endTurn', () => {
       currentTurn++
@@ -175,8 +192,8 @@ export class Game extends Scene {
         } else {
           currentTurn = 0
 
-          store.warData.targetArmy.overWorldChess.destroy()
           EventBus.emit('clearUI', store.warData.invadingArmy.overWorldChess)
+          this.handleunitDamage(store.warData.invadingArmy, 1)
 
           this.scene.switch('Overworld').launch('OverworldUI')
           this.scene.stop('UI')
@@ -184,6 +201,7 @@ export class Game extends Scene {
 
           EventBus.removeListener('endTurn')
           this.scene.stop('Game')
+          store.warData.targetArmy.overWorldChess.destroy()
         }
       }
     })
@@ -192,6 +210,7 @@ export class Game extends Scene {
     EventBus.emit('current-scene-ready', this)
     this.events.on('destroy', () => {
       EventBus.off('endTurn')
+      EventBus.off('looseGame')
     })
   }
 
@@ -207,6 +226,16 @@ export class Game extends Scene {
     // store.warData.targetArmy.modifiers.forEach((modifier) => {
     //   this.handleModifier(scene, store, modifier)
     // })
+  }
+
+  handleunitDamage(army, whichArmy) {
+    army.units.forEach((unit, index) => {
+      if (this[`army${whichArmy}`][index].health <= 0) {
+        army.units.splice(index, 1)
+      } else {
+        unit.health = this[`army${whichArmy}`][index].health
+      }
+    })
   }
 
   updateModifiers(scene, store) {
@@ -275,5 +304,76 @@ export class Game extends Scene {
 
   scaleFullscreen() {
     this.scale.setGameSize(window.innerWidth, window.innerHeight)
+  }
+
+  createUnitUI(scene, store) {
+    scene.unitUI = new Phaser.GameObjects.Container(scene, 0, 0)
+
+    scene.moveButton = scene.add.sprite(15, -4, 'over_move_button')
+    scene.moveButton.setInteractive()
+    scene.actionButton = scene.add.sprite(-15, -4, 'over_attack_button')
+    scene.actionButton.setInteractive()
+    scene.moveButton.setInteractive()
+    scene.closeUIButton = scene.add.sprite(0, -19, 'over_wait_button')
+    scene.closeUIButton.setInteractive()
+    scene.buildUIButton = scene.add.sprite(0, 11, 'over_build_button')
+    scene.buildUIButton.setInteractive()
+    scene.unitUI.add([
+      scene.moveButton,
+      scene.actionButton,
+      scene.closeUIButton,
+      scene.buildUIButton
+    ])
+
+    scene.add.existing(scene.unitUI)
+    scene.unitUI.setVisible(false)
+    scene.unitUI.setDepth(999)
+    var clickOutside = new ClickOutside(scene.unitUI)
+
+    clickOutside.on(
+      'clickoutside',
+      (clickoutside, gameObject, pointer) => {
+        store.removeUnitUI(this)
+      },
+      this
+    )
+
+    scene.moveButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasMoved && !scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showMoveableArea()
+        }
+      },
+      this
+    )
+    scene.actionButton.on(
+      'pointerdown',
+      function () {
+        if (!scene.hasActed) {
+          store.removeUnitUI(this)
+          store.selectedUnit.showPossibleActions()
+        }
+      },
+      this
+    )
+    scene.closeUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.hasActed = true
+      },
+      this
+    )
+
+    scene.buildUIButton.on(
+      'pointerdown',
+      function () {
+        store.removeUnitUI(this)
+        store.selectedUnit.build()
+      },
+      this
+    )
   }
 }

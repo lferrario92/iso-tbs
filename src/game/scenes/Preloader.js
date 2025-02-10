@@ -48,6 +48,8 @@ export class Preloader extends Scene {
     this.load.image('over_build_button', 'ingame_ui/overworld_buttons/build_button.png')
     this.load.image('over_wait_button', 'ingame_ui/overworld_buttons/wait_button.png')
 
+    this.load.image('endTurnButton', 'ingame_ui/general_ui/end_turn.png')
+
     this.load.image(
       'create_settler_button',
       'ingame_ui/overworld_buttons/create_settler_button.png'
@@ -63,6 +65,9 @@ export class Preloader extends Scene {
 
     this.load.image('woodsBack', 'backgrounds/woods_back.png')
     this.load.image('shopInterior', 'backgrounds/shop_interior_test.jpg')
+    this.load.image('spaceBackground', 'backgrounds/space_background.png')
+    this.load.image('spaceBackground2', 'backgrounds/space_background_2.png')
+    this.load.image('sunshine', 'backgrounds/sunshine.png')
     // this.load.image('platform', 'platform.png')
 
     // MARKERS
@@ -122,6 +127,19 @@ export class Preloader extends Scene {
     this.load.spritesheet('Soldier', 'sprites/Soldier.png', {
       frameWidth: 100,
       frameHeight: 100
+    })
+
+    /**
+     ***************************************************
+     *                    MINIFOLK                     *
+     ***************************************************
+     **/
+
+    // ShieldMan
+
+    this.load.spritesheet('ShieldMan', 'sprites/minifolk/Humans/MiniShieldMan.png', {
+      frameWidth: 32,
+      frameHeight: 32
     })
 
     // BATTLE

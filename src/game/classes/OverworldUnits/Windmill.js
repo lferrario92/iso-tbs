@@ -4,14 +4,26 @@ import { OverworldActionMarker } from '../Markers'
 import units from '../../data/units.json'
 import { useGameStore } from '../../stores/gameStore'
 
-export class Castle extends BuildingFriend {
+export class Windmill extends BuildingFriend {
   constructor(board, scene, x, y, sprite, callback, frame, tileXY, name) {
     super(board, scene, x, y, sprite, callback, frame, tileXY, name)
 
-    this.menuButtons = [...units]
+    this.menuButtons = []
 
-    this.board = board
     this._actionMarkers = []
+
+    this.sprite.play('windmill')
+    this.setDepth(this.y)
+
+    this.upgradeTiles()
+  }
+
+  testCallback() {
+    // let tiles = this.rexChess.board.ringToChessArray(this.rexChess.tileXYZ, 2, 0)
+    let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 2, 0)
+    this.showBorders(tiles)
+
+    EventBus.emit('selectUnit', this)
   }
 
   hidePossibleActions() {
@@ -25,7 +37,13 @@ export class Castle extends BuildingFriend {
     return this
   }
 
-  showPossibleActions(unitType) {
+  upgradeTiles() {
+    this.scene.board.tileXYArrayToChessArray(this.getBorderTiles(), 0).forEach((tile) => {
+      tile.food = tile.food + 1
+    })
+  }
+
+  showPossibleActions() {
     this.hidePossibleActions()
 
     var tileXYArray = this.rexChess.board
@@ -40,47 +58,12 @@ export class Castle extends BuildingFriend {
             2,
             1,
             () => {
-              const store = useGameStore()
-              EventBus.emit(`create${unitType}At`, {
-                key: 0,
-                position: tileXY
-              })
-              store.removeMoney(
-                units.find((unit) => unit.type === unitType).requirements.money || 0
-              )
-              EventBus.emit('updateResourcesUI')
+              console.log('farm this')
               this.hidePossibleActions()
             }
           )
         )
       })
     return tileXYArray
-  }
-
-  calculateFood() {
-    let tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0)
-
-    tiles.forEach((tile) => {
-      this.scene.add
-        .text(tile.x, tile.y - 2, tile.food, {
-          fontFamily: 'PublicPixel',
-          fontSize: '12px',
-          align: 'left'
-        })
-        .setOrigin(0, 0)
-        .setScale(0.2)
-    })
-
-    return tiles.reduce((total, tile) => tile.food + total, 0)
-  }
-
-  createArmy() {
-    this.showPossibleActions('Army')
-  }
-  createSettler() {
-    this.showPossibleActions('Settler')
-  }
-  createFarmer() {
-    this.showPossibleActions('Farmer')
   }
 }

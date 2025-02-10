@@ -25,7 +25,7 @@ export class MoveableMarker extends Phaser.GameObjects.Sprite {
     scene.add.existing(this)
     this.setScale(scale || 1)
     this.setAlpha(0.7)
-    this.postFX.addShine(1, 1, 1)
+    this.shine = this.postFX.addShine(1, 1, 1)
 
     // on pointer down, move to this tile
     this.on(
@@ -112,6 +112,7 @@ export class OverworldActionMarker extends Phaser.GameObjects.Sprite {
     super(scene, tileXY.x, tileXY.y, key, frame)
 
     group.add(this)
+    this.setDepth(this.y)
 
     board.addChess(this, tileXY.x, tileXY.y, -1)
 

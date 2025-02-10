@@ -1,14 +1,14 @@
 import { EventBus } from '../../EventBus'
-import { Castle } from './Castle'
 import { OverworldFriend } from './OverworldFriend'
+import { Windmill } from './Windmill'
 
-export class Settler extends OverworldFriend {
+export class Farmer extends OverworldFriend {
   constructor(board, scene, x, y, animation, units, name, key, tileXY) {
     super(board, scene, x, y, animation, units, name, key, tileXY)
   }
 
   build() {
-    let building = new Castle(
+    let building = new Windmill(
       this.rexChess.board,
       this.scene,
       0,
@@ -19,11 +19,10 @@ export class Settler extends OverworldFriend {
       },
       0,
       this.rexChess.tileXYZ,
-      'Castle'
+      'Windmill'
     )
     EventBus.emit('clearOverworldUI')
     building.setDepth(building.y)
-    this.scene.buildings.push(building)
 
     this.destroy()
   }

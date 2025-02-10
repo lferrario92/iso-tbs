@@ -12,6 +12,8 @@ import { TiledEx } from './scenes/TestTiled'
 import { PreBattle } from './scenes/PreBattle'
 import { Snowing } from './scenes/Snowing'
 import { OverworldUI } from './scenes/OverworldUI'
+import { TechTree } from './scenes/TechTree'
+import { Sunshine } from './scenes/Sunshine'
 
 // Find out more information about the Game Config at:
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -38,7 +40,9 @@ const config = {
     TiledEx,
     PreBattle,
     OverworldUI,
-    Snowing
+    Snowing,
+    Sunshine,
+    TechTree
   ]
 }
 

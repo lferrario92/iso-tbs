@@ -140,3 +140,46 @@ export const createOverworldAnimations = (scene) => {
     repeat: -1
   })
 }
+
+export const createMinifolksAnimations = (scene) => {
+  scene.anims.create({
+    key: 'shieldmanIdle',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [0, 1, 2, 3]
+    }),
+    frameRate: 8,
+    repeat: -1
+  })
+  scene.anims.create({
+    key: 'shieldmanWalk',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [6, 7, 8, 9, 10, 11]
+    }),
+    frameRate: 12,
+    repeat: -1
+  })
+  scene.anims.create({
+    key: 'shieldmanDamage',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [30, 31, 32, 30]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
+  scene.anims.create({
+    key: 'shieldmanDeath',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [36, 37, 38, 39, 39, 39]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
+  scene.anims.create({
+    key: 'shieldmanMeleeAttack',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [18, 19, 20, 21, 22, 23]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
+}

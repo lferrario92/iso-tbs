@@ -6,7 +6,8 @@ let descriptions = {
   Army: 'An army is a group of units that can attack and move around the map.',
   Settler: 'A settler is a unit that can build and move around the map.',
   Farmer: 'A farmer is a unit that can build and move around the map.',
-  Castle: 'A castle is a building'
+  Castle: 'A castle is a building',
+  Windmill: 'A windmill is an animated building'
 }
 
 export class OverworldUI extends Scene {
@@ -22,7 +23,7 @@ export class OverworldUI extends Scene {
       .sprite(this.scale.width - 8 * scale, this.scale.height - 8 * scale, 'endTurnImage')
       .setInteractive()
       .setScrollFactor(0, 0)
-      .setScale(scale)
+      .setScale(3)
 
     const createSoldier = this.add
       .sprite(this.scale.width - 8 * scale, this.scale.height - 8 * scale, 'primaryAttackImage')
@@ -43,6 +44,23 @@ export class OverworldUI extends Scene {
     this.overworldUI = new Phaser.GameObjects.Container(this, 0, 0)
     this.currentUnits = []
     this.buttonContainer = []
+
+    this.money = this.add
+      .text(160, 5, store.money, {
+        fontFamily: 'PublicPixel',
+        fontSize: '10px',
+        align: 'left'
+      })
+      .setOrigin(0, 0)
+
+    this.food = this.add
+      .text(240, 5, store.food, {
+        fontFamily: 'PublicPixel',
+        fontSize: '10px',
+        align: 'left'
+      })
+      .setOrigin(0, 0)
+    console.log(this.food)
 
     EventBus.on('clearOverworldUI', () => {
       this.clearOverworldUI(this)
@@ -75,12 +93,11 @@ export class OverworldUI extends Scene {
           fontSize: '8px',
           lineSpacing: 4,
           align: 'left',
-          wordWrap: { width: 140 }
+          wordWrap: { width: 130 }
         })
         .setLineSpacing(4)
         .setOrigin(0, 0)
 
-      console.log(this.currentDescription)
       if (unit.units) {
         this.currentUnits.forEach((unit) => unit?.destroy())
         this.currentUnits.splice(0)
@@ -97,14 +114,18 @@ export class OverworldUI extends Scene {
           let unitContainer = new Phaser.GameObjects.Container(this, 0, 0, [])
 
           let health = this.add
-            .text(0, 18, '100', {
+            .text(0, 18, unit.health || 909, {
               fontFamily: 'PublicPixel',
               fontSize: '10px',
               align: 'center'
             })
             .setOrigin()
 
-          unitContainer.add([this.add.sprite(0, 0, unit.type, 0).setScale(2), health])
+          // TODO: remove hardcoded y coord for minifolks
+          unitContainer.add([
+            this.add.sprite(0, unit.type == 'ShieldMan' ? -16 : 0, unit.type, 0).setScale(2),
+            health
+          ])
 
           this.add.existing(unitContainer)
           return unitContainer
@@ -114,7 +135,7 @@ export class OverworldUI extends Scene {
           width: 3,
           height: 3,
           cellWidth: 40,
-          cellHeight: 40,
+          cellHeight: 50,
           x: 30,
           y: 180
         })
@@ -131,29 +152,41 @@ export class OverworldUI extends Scene {
           .setOrigin(0, 0)
 
         this.buttonContainer = unit.menuButtons.map((button) => {
+          let unitButton = new Phaser.GameObjects.Container(this, 0, 0, [])
+
           let sprite = new Phaser.GameObjects.Sprite(this, 0, 0, button.key)
 
           sprite.setScale(2)
+
+          let price = this.add
+            .text(0, 22, button.requirements.money, {
+              fontFamily: 'PublicPixel',
+              fontSize: '10px',
+              align: 'center'
+            })
+            .setOrigin()
+          unitButton.add([sprite, price])
+
+          this.add.existing(unitButton)
+
           sprite.setInteractive()
           sprite.on('pointerdown', () => {
-            store.selectedUnit[button.callback]()
+            if (button.requirements.money <= store.money) {
+              store.selectedUnit[button.callback]()
+            } else {
+              alert('no te alcanza')
+            }
           })
-
-          this.add.existing(sprite)
-
-          return sprite
+          return unitButton
         })
-
-        this.add.existing(this.buttonContainer)
-        console.log(this.buttonContainer)
 
         Phaser.Actions.GridAlign(this.buttonContainer, {
           width: 3,
           height: 3,
           cellWidth: 40,
           cellHeight: 40,
-          x: 20,
-          y: 170
+          x: 24,
+          y: 175
         })
       }
     })
@@ -167,6 +200,11 @@ export class OverworldUI extends Scene {
 
     endTurnButton.on('pointerdown', () => {
       EventBus.emit('endTurnOverworld')
+    })
+
+    EventBus.on('updateResourcesUI', () => {
+      this.money.setText(store.money)
+      this.food.setText(store.food)
     })
 
     createSoldier.on('pointerdown', () => {

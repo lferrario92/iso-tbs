@@ -10,6 +10,7 @@ export class OverworldFriend extends OverworldChess {
 
     this.units = units
     this.name = name
+    this.foodConsumption = 1
 
     this.on(
       'board.pointerdown',
