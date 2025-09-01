@@ -210,6 +210,7 @@ export class Overworld extends Scene {
         this.buildings.forEach((building) => {
           if (building instanceof Castle) {
             store.addFood(building.calculateFood())
+            building.deselect && building.deselect()
           }
         })
         this.playerArmy.forEach((army) => {
