@@ -58,20 +58,39 @@ export class Castle extends BuildingFriend {
   }
 
   calculateFood() {
-    let tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0)
+    // Clean up any existing food text displays
+    if (this.foodTexts) {
+      this.foodTexts.forEach(text => text.destroy())
+    }
+    this.foodTexts = []
+
+    const isWinter = this.board.season === 'winter';
+    let totalFood = 0;
+    
+    const tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0);
 
     tiles.forEach((tile) => {
-      this.scene.add
-        .text(tile.x, tile.y - 2, tile.food, {
-          fontFamily: 'PublicPixel',
-          fontSize: '12px',
-          align: 'left'
-        })
-        .setOrigin(0, 0)
-        .setScale(0.2)
-    })
+      // Calculate food based on tile's food value and season
+      const effectiveFood = isWinter ? Math.max(0, tile.food - 1) : tile.food;
+      
+      // Only show text if food is greater than 0
+      if (effectiveFood > 0) {
+        const foodText = this.scene.add
+          .text(tile.x, tile.y - 2, effectiveFood, {
+            fontFamily: 'PublicPixel',
+            fontSize: '12px',
+            align: 'left'
+          })
+          .setOrigin(0, 0)
+          .setScale(0.2);
+        
+        this.foodTexts.push(foodText);
+      }
+      
+      totalFood += effectiveFood;
+    });
 
-    return tiles.reduce((total, tile) => tile.food + total, 0)
+    return totalFood;
   }
 
   createArmy() {

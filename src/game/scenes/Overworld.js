@@ -4,7 +4,6 @@ import { Board } from '../classes/Board.js'
 import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin'
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
-import { OverworldChess } from '../classes/OverworldUnits/OverworldChess.js'
 import { createOverworldAnimations } from '../gameFunctions/Animations.js'
 import { OverworldFriend } from '../classes/OverworldUnits/OverworldFriend.js'
 import { OverworldFoe } from '../classes/OverworldUnits/OverworldFoe.js'
@@ -276,8 +275,7 @@ export class Overworld extends Scene {
     })
 
     EventBus.on('createFarmerAt', ({ key, position }) => {
-      this.actors.push(
-        new Farmer(
+      let newFarmer = new Farmer(
           this.board,
           this,
           0,
@@ -288,7 +286,10 @@ export class Overworld extends Scene {
           key,
           position
         )
-      )
+
+      newFarmer.hasActed = true
+
+      this.actors.push(newFarmer)
     })
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0
