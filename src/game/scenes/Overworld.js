@@ -4,7 +4,6 @@ import { Board } from '../classes/Board.js'
 import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin'
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/pinch-plugin'
 import { buildDrag, camera } from '../gameFunctions/Camera.js'
-import { OverworldChess } from '../classes/OverworldUnits/OverworldChess.js'
 import { createOverworldAnimations } from '../gameFunctions/Animations.js'
 import { OverworldFriend } from '../classes/OverworldUnits/OverworldFriend.js'
 import { OverworldFoe } from '../classes/OverworldUnits/OverworldFoe.js'
@@ -207,10 +206,12 @@ export class Overworld extends Scene {
       }
 
       if (this.currentTurn % 2 == 0) {
+        this.input.enabled = true
         playerOverworldTurnStart(this.playerArmy)
         this.buildings.forEach((building) => {
           if (building instanceof Castle) {
             store.addFood(building.calculateFood())
+            building.deselect && building.deselect()
           }
         })
         this.playerArmy.forEach((army) => {
@@ -218,6 +219,7 @@ export class Overworld extends Scene {
         })
         EventBus.emit('updateResourcesUI')
       } else {
+        this.input.enabled = false
         enemyOverworldTurnStart(this.enemyArmies)
       }
     })
@@ -276,8 +278,7 @@ export class Overworld extends Scene {
     })
 
     EventBus.on('createFarmerAt', ({ key, position }) => {
-      this.actors.push(
-        new Farmer(
+      let newFarmer = new Farmer(
           this.board,
           this,
           0,
@@ -288,7 +289,10 @@ export class Overworld extends Scene {
           key,
           position
         )
-      )
+
+      newFarmer.hasActed = true
+
+      this.actors.push(newFarmer)
     })
     // this.cameras.main.zoom = 3
     // this.cameras.main.scrollY = 0

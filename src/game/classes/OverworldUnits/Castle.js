@@ -9,9 +9,9 @@ export class Castle extends BuildingFriend {
     super(board, scene, x, y, sprite, callback, frame, tileXY, name)
 
     this.menuButtons = [...units]
-
     this.board = board
     this._actionMarkers = []
+    this._foodTexts = []
   }
 
   hidePossibleActions() {
@@ -58,20 +58,61 @@ export class Castle extends BuildingFriend {
   }
 
   calculateFood() {
-    let tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0)
+    const isWinter = this.board.season === 'winter';
+    let totalFood = 0;
+    
+    const tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0);
+    tiles.forEach((tile) => {
+      // Calculate food based on tile's food value and season
+      totalFood += isWinter ? Math.max(0, tile.food - 1) : tile.food;
+    });
+
+    return totalFood;
+  }
+
+  showFoodText() {
+    this.hideFoodText();
+    this._foodTexts = [];
+    
+    const isWinter = this.board.season === 'winter';
+    const tiles = this.board.tileXYArrayToChessArray(this.getBorderTiles(), 0);
 
     tiles.forEach((tile) => {
-      this.scene.add
-        .text(tile.x, tile.y - 2, tile.food, {
-          fontFamily: 'PublicPixel',
-          fontSize: '12px',
-          align: 'left'
-        })
-        .setOrigin(0, 0)
-        .setScale(0.2)
-    })
+      const effectiveFood = isWinter ? Math.max(0, tile.food - 1) : tile.food;
+      
+      if (effectiveFood > 0) {
+        const foodText = this.scene.add
+          .text(tile.x, tile.y - 2, effectiveFood, {
+            fontFamily: 'PublicPixel',
+            fontSize: '12px',
+            align: 'left',
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+          })
+          .setOrigin(0, 0)
+          .setScale(0.2)
+          .setShadow(1, 1, '#000000', 2);
+        
+        this._foodTexts.push(foodText);
+      }
+    });
+  }
 
-    return tiles.reduce((total, tile) => tile.food + total, 0)
+  hideFoodText() {
+    if (this._foodTexts) {
+      this._foodTexts.forEach(text => text.destroy());
+      this._foodTexts = [];
+    }
+  }
+
+  select() {
+    this.showFoodText();
+    return this;
+  }
+
+  deselect() {
+    this.hideFoodText();
   }
 
   createArmy() {

@@ -17,6 +17,7 @@ export const useGameStore = defineStore('game', {
       overworld: false,
       market: false
     },
+    uiBlocked: false,
     currentFriend: {
       attackType: null,
       texture: {
@@ -66,6 +67,9 @@ export const useGameStore = defineStore('game', {
     },
     getFood(state) {
       return state.food
+    },
+    getUIBlocked(state) {
+      return state.uiBlocked
     }
   },
   actions: {
@@ -89,6 +93,7 @@ export const useGameStore = defineStore('game', {
     unselectUnit(unit, newUnit) {
       if (!unit || this.areTheSame(this.selectedUnit, newUnit)) return
       unit.hideMoveableArea && unit.hideMoveableArea()
+      unit.deselect && unit.deselect()
       unit.selector.setAlpha(0)
       unit.setDepth(unit.y)
       if (unit.scene?.unitUI) {

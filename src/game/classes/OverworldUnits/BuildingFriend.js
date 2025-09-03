@@ -51,6 +51,7 @@ export class BuildingFriend extends Building {
     // let tiles = this.rexChess.board.ringToChessArray(this.rexChess.tileXYZ, 2, 0)
     let tiles = this.rexChess.board.filledRingToChessArray(this.rexChess.tileXYZ, 1, 0)
     this.showBorders(tiles)
+    this.select()
 
     EventBus.emit('selectUnit', this)
   }

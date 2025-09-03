@@ -1,36 +1,73 @@
-# Phaser Vue Template
+# Isometric Turn-Based Strategy Game
 
-This is a Phaser 3 project template that uses the Vue framework and Vite for bundling. It includes a bridge for Vue to Phaser game communication, hot-reloading for quick development workflow and scripts to generate production-ready builds.
+An isometric turn-based strategy game built with Phaser 3, Vue 3, and Vite. This project features tactical combat on an isometric grid, character progression, and engaging turn-based gameplay mechanics.
 
-**[This Template is also available as a TypeScript version.](https://github.com/phaserjs/template-vue-ts)**
+![Game Screenshot](public/assets/screenshot.png)
 
-### Versions
+## Features
 
-This template has been updated for:
+- Isometric grid-based movement and combat
+- Turn-based gameplay with action points system
+- Character progression and abilities
+- Interactive UI built with Vue 3
+- Modern development workflow with Vite
 
-- [Phaser 3.80.1](https://github.com/phaserjs/phaser)
-- [Vue 3.4.27](https://github.com/vuejs)
-- [Vite 5.2.11](https://github.com/vitejs/vite)
+## Tech Stack
 
-![screenshot](screenshot.png)
+- [Phaser 3](https://phaser.io/) - Game engine
+- [Vue 3](https://vuejs.org/) - Frontend framework
+- [Vite](https://vitejs.dev/) - Build tool
+- [Rex UI Plugins](https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-overview/) - Enhanced UI components for Phaser
 
 ## Requirements
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+- [Node.js](https://nodejs.org/) (v16+ recommended)
+- npm (comes with Node.js)
 
-## Available Commands
+## Getting Started
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm run dev` | Launch a development web server |
-| `npm run build` | Create a production build in the `dist` folder |
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Start development server**
+   ```bash
+   npm run dev
+   ```
+   The game will be available at `http://localhost:3000`
+
+3. **Build for production**
+   ```bash
+   npm run build
+   ```
+   The built files will be in the `dist` directory
+
+4. **Preview production build**
+   ```bash
+   npm run serve
+   ```
+
+## Development
+
+For development with network access (e.g., testing on mobile devices):
+```bash
+npm run host
+```
+
+## Project Structure
+
+- `src/` - Source code
+  - `game/` - Phaser game code
+  - `assets/` - Game assets (images, sprites, etc.)
+- `public/` - Static files
+- `vite/` - Vite configuration files
 
 ## Writing Code
 
 After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm run dev`.
 
-The local development server runs on `http://localhost:8080` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
+The local development server runs on `http://localhost:3000` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
 
 Once the server is running you can edit any of the files in the `src` folder. Vite will automatically recompile your code and then reload the browser.
 
