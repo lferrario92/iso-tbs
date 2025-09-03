@@ -17,6 +17,7 @@ export const useGameStore = defineStore('game', {
       overworld: false,
       market: false
     },
+    uiBlocked: false,
     currentFriend: {
       attackType: null,
       texture: {
@@ -66,6 +67,9 @@ export const useGameStore = defineStore('game', {
     },
     getFood(state) {
       return state.food
+    },
+    getUIBlocked(state) {
+      return state.uiBlocked
     }
   },
   actions: {

@@ -179,9 +179,13 @@ export class Game extends Scene {
       if (currentTurn % 2 == 0) {
         this.updateModifiers(this, store)
         console.log('active: ', this.activeModifiers)
+        this.input.enabled = true
+        this.scene.get('UI').input.enabled = true
 
         playerTurnStart(this.army1)
       } else {
+        this.input.enabled = false
+        this.scene.get('UI').input.enabled = false
         if (this.army2.some((x) => x.active)) {
           let players = this.army1.filter((x) => x.active)
           enemyTurnStart(

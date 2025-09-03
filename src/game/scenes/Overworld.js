@@ -206,6 +206,7 @@ export class Overworld extends Scene {
       }
 
       if (this.currentTurn % 2 == 0) {
+        this.input.enabled = true
         playerOverworldTurnStart(this.playerArmy)
         this.buildings.forEach((building) => {
           if (building instanceof Castle) {
@@ -218,6 +219,7 @@ export class Overworld extends Scene {
         })
         EventBus.emit('updateResourcesUI')
       } else {
+        this.input.enabled = false
         enemyOverworldTurnStart(this.enemyArmies)
       }
     })
