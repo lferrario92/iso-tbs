@@ -166,7 +166,7 @@ body {
 }
 @font-face {
   font-family: PublicPixel;
-  src: url('assets/PublicPixel-E447g.ttf');
+  src: url('/assets/PublicPixel-E447g.ttf');
   font-weight: 400;
   font-weight: normal;
 }
