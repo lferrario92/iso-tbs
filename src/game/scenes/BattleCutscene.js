@@ -40,12 +40,14 @@ export class BattleCutscene extends Scene {
       center.y + (store.currentFriend.cutsceneOffsetY || 60),
       friendKey
     )
+    friend.canBlock = store.currentFriend.blockChance > Random(1, 100)
 
     friend.scale = 8
     const friendIdle = `${friendKey.toLowerCase()}Idle`
     const friendDamage = `${friendKey.toLowerCase()}Damage`
     const friendDeath = `${friendKey.toLowerCase()}Death`
     const friendAttack = `${friendKey.toLowerCase()}${store.currentFriend.attackType}Attack`
+    const friendBlock = `${friendKey.toLowerCase()}Block`
 
     friend.play(friendIdle)
 
@@ -54,12 +56,14 @@ export class BattleCutscene extends Scene {
       center.y + (store.currentFoe.cutsceneOffsetY || 60),
       foeKey
     )
+    foe.canBlock = store.currentFoe.blockChance > Random(1, 100)
     foe.setFlipX(true)
     foe.scale = 8
     const foeIdle = `${foeKey.toLowerCase()}Idle`
     const foeDamage = `${foeKey.toLowerCase()}Damage`
     const foeDeath = `${foeKey.toLowerCase()}Death`
     const foeAttack = `${foeKey.toLowerCase()}${store.currentFoe.attackType}Attack`
+    const foeBlock = `${foeKey.toLowerCase()}Block`
 
     foe.play(foeIdle)
 
@@ -107,7 +111,11 @@ export class BattleCutscene extends Scene {
     }
 
     friend.playAfterDelay(friendAttack, 1000)
-    foe.playAfterDelay(foeDamage, damageDelay)
+    if (foe.canBlock) {
+      foe.playAfterDelay(foeBlock, 1000)
+    } else {
+      foe.playAfterDelay(foeDamage, damageDelay)
+    }
 
     friend.on('animationcomplete', (anim) => {
       if (anim.key === friendAttack) {
@@ -122,6 +130,8 @@ export class BattleCutscene extends Scene {
         } else {
           friend.play(friendIdle)
         }
+      } else if (anim.key === friendBlock) {
+        friend.play(friendIdle)
       }
     })
 
@@ -138,7 +148,11 @@ export class BattleCutscene extends Scene {
             foe.play(foeIdle)
             setTimeout(() => {
               foe.playAfterDelay(foeAttack, 1000)
-              friend.playAfterDelay(friendDamage, 1200)
+              if (friend.canBlock) {
+                friend.playAfterDelay(friendBlock, 1000)
+              } else {
+                friend.playAfterDelay(friendDamage, 1200)
+              }
 
               this.endAll(store, 2200)
             }, 100)
@@ -148,8 +162,10 @@ export class BattleCutscene extends Scene {
             this.endAll(store)
           }
         }
-        // friend.play(friendIdle)
       } else if (anim.key === foeAttack) {
+        foe.play(foeIdle)
+        this.endAll(store)
+      } else if (anim.key === foeBlock) {
         foe.play(foeIdle)
         this.endAll(store)
       }

@@ -10,7 +10,7 @@ export class OverworldFriend extends OverworldChess {
 
     this.units = units
     this.name = name
-    this.foodConsumption = 1
+    this.foodConsumption = units.length * 2
 
     this.on(
       'board.pointerdown',
@@ -36,6 +36,11 @@ export class OverworldFriend extends OverworldChess {
   resetMoveFlag() {
     // this.moveButton.setVisible(true)
     this.hasMoved = false
+    return this
+  }
+
+  recalculateFoodConsumption() {
+    this.foodConsumption = this.units.length * 2
     return this
   }
 

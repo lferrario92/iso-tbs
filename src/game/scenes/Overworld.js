@@ -232,7 +232,7 @@ export class Overworld extends Scene {
           0,
           0,
           'overworldIdle1',
-          [{ constructor: SoldierC, health: 100, type: 'Soldier' }],
+          [{ constructor: ShieldMan, health: 100, type: 'ShieldMan' }],
           'Army'
         )
       )

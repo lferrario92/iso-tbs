@@ -182,4 +182,12 @@ export const createMinifolksAnimations = (scene) => {
     frameRate: 12,
     repeat: 0
   })
+  scene.anims.create({
+    key: 'shieldmanBlock',
+    frames: scene.anims.generateFrameNumbers('ShieldMan', {
+      frames: [24, 25, 26, 27, 28, 29]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
 }
