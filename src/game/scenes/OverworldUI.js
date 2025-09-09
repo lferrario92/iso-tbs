@@ -10,6 +10,11 @@ let descriptions = {
   Windmill: 'A windmill is an animated building'
 }
 
+let uiOffset = {
+  ShieldMan: -16,
+  SwordMan: -16
+}
+
 export class OverworldUI extends Scene {
   constructor() {
     super('OverworldUI')
@@ -123,7 +128,7 @@ export class OverworldUI extends Scene {
 
           // TODO: remove hardcoded y coord for minifolks
           unitContainer.add([
-            this.add.sprite(0, unit.type == 'ShieldMan' ? -16 : 0, unit.type, 0).setScale(2),
+            this.add.sprite(0, uiOffset[unit.type] || 0, unit.type, 0).setScale(2),
             health
           ])
 

@@ -1,5 +1,6 @@
 import { EventBus } from '../EventBus'
 import { Scene } from 'phaser'
+import { useGameStore } from '../stores/gameStore'
 import { Buttons } from 'phaser3-rex-plugins/templates/ui/ui-components.js'
 import RexUI from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
@@ -46,6 +47,24 @@ export class MainMenu extends Scene {
       // this.scene.start('TechTree')
       //   this.scene.start('TiledEx')
     })
+
+    // Add season toggle button
+    const store = useGameStore()
+    const seasonText = this.add.text(this.scale.width / 2, this.scale.height / 2 + 60, `Season: ${store.season}`, {
+      fontFamily: 'Arial Black',
+      fontSize: 24,
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 6,
+      align: 'center'
+    })
+      .setDepth(100)
+      .setOrigin(0.5)
+      .setInteractive()
+      .on('pointerdown', () => {
+        store.season = store.season === 'winter' ? 'summer' : 'winter'
+        seasonText.setText(`Season: ${store.season}`)
+      })
 
     EventBus.emit('current-scene-ready', this)
   }

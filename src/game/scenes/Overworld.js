@@ -20,6 +20,7 @@ import { Farmer } from '../classes/OverworldUnits/Farmer.js'
 import { Castle } from '../classes/OverworldUnits/Castle.js'
 import ClickOutside from 'phaser3-rex-plugins/plugins/clickoutside.js'
 import { ShieldMan } from '../classes/Minifolks/Humans/ShieldMan.js'
+import { SwordMan } from '../classes/Minifolks/Humans/SwordMan.js'
 
 export class Overworld extends Scene {
   constructor() {
@@ -71,13 +72,13 @@ export class Overworld extends Scene {
           cellHeight: 8,
           type: 1
         }),
-        width: 5,
-        height: 5
+        width: store.worldSize.width,
+        height: store.worldSize.height
       },
       true
     )
 
-    this.snowed = false
+    this.snowed = store.season === 'winter'
 
     camera(this)
     buildDrag(this)
@@ -215,6 +216,7 @@ export class Overworld extends Scene {
           }
         })
         this.playerArmy.forEach((army) => {
+          army.recalculateFoodConsumption()
           store.removeFood(army.foodConsumption)
         })
         EventBus.emit('updateResourcesUI')
@@ -265,7 +267,7 @@ export class Overworld extends Scene {
           { constructor: SoldierC, health: 100, type: 'Soldier' },
           { constructor: SoldierC, health: 100, type: 'Soldier' },
           { constructor: ShieldMan, health: 100, type: 'ShieldMan' },
-          { constructor: SoldierC, health: 100, type: 'Soldier' }
+          { constructor: SwordMan, health: 100, type: 'SwordMan' }
         ],
         'Army',
         key,

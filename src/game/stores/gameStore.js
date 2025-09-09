@@ -11,13 +11,17 @@ export const useGameStore = defineStore('game', {
     selectedBuilding: null,
     selector: null,
     fightCutscene: null,
-    resources: {},
     createdAnimations: {
       game: false,
       overworld: false,
       market: false
     },
     uiBlocked: false,
+    season: 'summer',
+    worldSize: {
+      width: 5,
+      height: 5
+    },
     currentFriend: {
       attackType: null,
       texture: {
@@ -45,7 +49,7 @@ export const useGameStore = defineStore('game', {
       }
     },
     money: 200,
-    food: 0,
+    food: 10,
     cards: [
       {
         key: 'cards',

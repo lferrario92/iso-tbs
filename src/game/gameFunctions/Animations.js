@@ -190,4 +190,45 @@ export const createMinifolksAnimations = (scene) => {
     frameRate: 12,
     repeat: 0
   })
+
+  scene.anims.create({
+    key: 'swordmanIdle',
+    frames: scene.anims.generateFrameNumbers('SwordMan', {
+      frames: [0, 1, 2, 3]
+    }),
+    frameRate: 8,
+    repeat: -1
+  })
+  scene.anims.create({
+    key: 'swordmanWalk',
+    frames: scene.anims.generateFrameNumbers('SwordMan', {
+      frames: [6, 7, 8, 9, 10, 11]
+    }),
+    frameRate: 12,
+    repeat: -1
+  })
+  scene.anims.create({
+    key: 'swordmanDamage',
+    frames: scene.anims.generateFrameNumbers('SwordMan', {
+      frames: [24, 25, 26, 24]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
+  scene.anims.create({
+    key: 'swordmanDeath',
+    frames: scene.anims.generateFrameNumbers('SwordMan', {
+      frames: [30, 31, 32, 33, 33, 33]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
+  scene.anims.create({
+    key: 'swordmanMeleeAttack',
+    frames: scene.anims.generateFrameNumbers('SwordMan', {
+      frames: [18, 19, 20, 21, 22, 23]
+    }),
+    frameRate: 12,
+    repeat: 0
+  })
 }

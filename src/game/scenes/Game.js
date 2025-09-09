@@ -67,7 +67,6 @@ export class Game extends Scene {
       false,
       store.warData.bioma
     )
-
     let placingCoords
 
     // 2 3
@@ -138,7 +137,7 @@ export class Game extends Scene {
     createAnimations(this)
     createMinifolksAnimations(this)
 
-    this.cameras.main.setZoom(3)
+    this.cameras.main.setZoom(2.5)
     this.midGroup = this.add.group()
     this.topGroup = this.add.group()
 

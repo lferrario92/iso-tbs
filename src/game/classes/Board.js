@@ -14,15 +14,16 @@ export class Board extends RexPlugins.Board.Board {
   constructor(scene, config, isOverworld) {
     super(scene, config)
 
-    this.season = 'summer'
+    const store = useGameStore()
+    this.season = store.season
 
-    this
-      // Fill tiles
-      .forEachTileXY(function (tileXY, board) {
-        new Tile(board, tileXY, isOverworld)
-      })
-      // Enable touch events
-      .setInteractive()
+    this.forEachTileXY((tileXY, board) => {
+      let tile = new Tile(board, tileXY, isOverworld)
+
+      if (this.season === 'winter') {
+        tile.setSnowy()
+      }
+    }).setInteractive()
   }
 
   nextSeason() {

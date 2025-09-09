@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { EventBus } from './EventBus'
 import StartGame from './main'
 import { useGameStore } from './stores/gameStore'
@@ -77,11 +77,84 @@ EventBus.on('clearUI', (chess) => {
 })
 
 defineExpose({ scene, game })
+
+
+const isMenuOpen = ref(false)
+const localWorldSize = ref({
+  width: store.worldSize.width,
+  height: store.worldSize.height
+})
+
+const updateWorldSize = () => {
+  store.worldSize = { ...localWorldSize.value }
+}
+
+const resetWorldSize = () => {
+  localWorldSize.value = {
+    width: 5,
+    height: 5
+  }
+  updateWorldSize()
+}
 </script>
 
 <template>
   <div>
     <div id="game-container"></div>
+    
+    <!-- Settings Button -->
+    <button 
+      @click="isMenuOpen = !isMenuOpen" 
+      class="fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white p-2 rounded-lg z-50"
+    >
+      ⚙️ Settings
+    </button>
+    
+    <!-- Collapsible Menu -->
+    <div 
+      v-if="isMenuOpen" 
+      class="fixed top-16 left-1/2 -translate-x-1/2 bg-white p-4 rounded-lg shadow-lg z-50 w-64"
+    >
+      <h3 class="font-bold mb-4">World Settings</h3>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Width: {{ localWorldSize.width }}</label>
+        <input 
+          type="range" 
+          v-model.number="localWorldSize.width" 
+          min="3" 
+          max="20" 
+          class="w-full"
+        >
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Height: {{ localWorldSize.height }}</label>
+        <input 
+          type="range" 
+          v-model.number="localWorldSize.height" 
+          min="3" 
+          max="20" 
+          class="w-full"
+        >
+      </div>
+      
+      <div class="flex justify-between">
+        <button 
+          @click="updateWorldSize" 
+          class="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+        >
+          Apply
+        </button>
+        <button 
+          @click="resetWorldSize" 
+          class="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+    
     <div
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden flex-col items-center justify-center bg-[#b75e84] w-full h-screen"
       id="rotateAlert"
